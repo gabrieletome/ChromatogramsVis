@@ -1,0 +1,37 @@
+Package: ChromatogramsVis
+Title: Visualising and Exploring Chromatograms Data
+Version: 0.1.1
+Description: This package defines a set of helper function to
+   visualise and explore mass spectrometry data stored as Chromatograms
+   objects.
+Authors@R:
+    c(person(given = "Gabriele", family = "Tomè",
+             email = "gabriele.tome@eurac.edu",
+             role = c("aut","cre"),
+             comment = c(ORCID = "0000-0002-3976-6068",
+             fnd = "MetaRbolomics4Galaxy project (CUP: D53C25001030003) co-funded by the Autonomous Province of Bolzano under the Joint Projects South Tyrol–Germany 2025 program.")),
+      person(given = "Johannes",
+             family = "Rainer",
+             email = "Johannes.Rainer@eurac.edu",
+             role = c("aut"),
+             comment = c(ORCID = "0000-0002-6977-7147")))
+Depends:
+   Chromatograms
+Imports:
+   shiny,
+   shinydashboard,
+   colourpicker,
+   DT,
+   ggplot2,
+   htmltools
+Suggests:
+   mzR,
+   MsDataHub,
+   testthat
+License: Artistic-2.0
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+BugReports: https://github.com/RforMassSpectrometry/ChromatogramsVis/issues
+URL: https://rformassspectrometry.github.io/ChromatogramsVis
+biocViews: Proteomics, MassSpectrometry, Metabolomics, Visualization
+Config/roxygen2/version: 8.1.0
