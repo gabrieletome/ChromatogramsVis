@@ -1,6 +1,6 @@
 Package: ChromatogramsVis
 Title: Visualising and Exploring Chromatograms Data
-Version: 0.1.1
+Version: 0.1.2
 Description: This package defines a set of helper function to
    visualise and explore mass spectrometry data stored as Chromatograms
    objects.
@@ -23,7 +23,8 @@ Imports:
    colourpicker,
    DT,
    ggplot2,
-   htmltools
+   htmltools,
+   Spectra
 Suggests:
    mzR,
    MsDataHub,

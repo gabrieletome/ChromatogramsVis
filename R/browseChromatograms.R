@@ -36,6 +36,7 @@ browseChromatograms <- function(object = NULL) {
             stop("The 'Chromatograms' object is empty.")
     }
     i <- 1
+
     ui <- dashboardPage(
         skin = "black",
         title = "ChromatogramsVis",
@@ -51,7 +52,8 @@ browseChromatograms <- function(object = NULL) {
             }),
             conditionalPanel('input.input_cat == "Raw data"', {
                 fluidRow(
-                    fileInput("raw_file", "Upload the raw file", accept = ".mzml"),
+                    fileInput("raw_file", "Upload the raw file",
+                                accept = ".mzml"),
                     actionButton("load_raw_file", "Load file")
                 )
             }),
@@ -77,20 +79,24 @@ browseChromatograms <- function(object = NULL) {
     )
 
     server <- function(input, output, session) {
+        ## Load Chromatograms function
+        source("chromatogramsServer.R", local = TRUE)
+        source("chromatogramsOverlayServer.R", local = TRUE)
+
         interactive <- FALSE
         object_reactive <- reactiveVal()
-
-        ## Load GUI ----
-        # if(!is.null(object)){
-        #     output$chromatogramsPlot <- renderUI(chrGui(object_reactive()))
-        #     output$chromatogramsOverlayPlot <- renderUI(chrOverlayGui(object_reactive()))
-        # }
 
         ## Clean if radioButton change
         observeEvent(input$input_cat, {
             output$chromatogramsPlot <- NULL
             output$chromatogramsPlot_overlay <- NULL
-            ## TODO: clean single variables...
+            ## clean single variables
+            output$plotChromatograms <- NULL
+            output$dfChromatograms <- NULL
+            output$plotChromatograms_overlay <- NULL
+            output$dfChromatograms_overlay <- NULL
+            ## clean reactive variables
+            object_reactive <- reactiveVal()
         })
 
         ## Load from R parameter
@@ -99,7 +105,8 @@ browseChromatograms <- function(object = NULL) {
             object_reactive(object)
 
             output$chromatogramsPlot <- renderUI(chrGui(object_reactive()))
-            output$chromatogramsOverlayPlot <- renderUI(chrOverlayGui(object_reactive()))
+            output$chromatogramsOverlayPlot <-
+                    renderUI(chrOverlayGui(object_reactive()))
         })
         ## Load raw file
         observeEvent(input$load_raw_file, {
@@ -110,9 +117,9 @@ browseChromatograms <- function(object = NULL) {
             object_reactive(Chromatograms(be))
             print(object_reactive())
             output$chromatogramsPlot <- renderUI(chrGui(object_reactive()))
-            output$chromatogramsOverlayPlot <- renderUI(chrOverlayGui(object_reactive()))
+            output$chromatogramsOverlayPlot <-
+                    renderUI(chrOverlayGui(object_reactive()))
         })
-
 
         ## ChromatogramsPlot ----
         ## start by displaying the first spectrum
@@ -125,119 +132,6 @@ browseChromatograms <- function(object = NULL) {
         output$dfChromatograms <- renderDT(get_df(object_reactive(), i,
                                                     xlim = input$chr_xlim,
                                                     ylim = input$chr_ylim))
-
-        ## update the plot if the slider is changed
-        observeEvent(input$slider, {
-            i <<- as.integer(input$slider)
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-            output$dfChromatograms <- renderDT(get_df(object_reactive(), i,
-                                                    xlim = input$chr_xlim,
-                                                    ylim = input$chr_ylim))
-        })
-        ## update the plot with the next spectrum
-        observeEvent(input$nxt, {
-            if (i < length(object_reactive())) i <<- i + 1
-            updateSliderInput(session = session, inputId = "slider", value = i)
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-            output$dfChromatograms <- renderDT(get_df(object_reactive(), i,
-                                                    xlim = input$chr_xlim,
-                                                    ylim = input$chr_ylim))
-        })
-        ## update the plot with the previous spectrum
-        observeEvent(input$prv, {
-            if (i > 1) i <<- i - 1
-            updateSliderInput(session = session, inputId = "slider", value = i)
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-            output$dfChromatograms <- renderDT(get_df(object_reactive(), i,
-                                                    xlim = input$chr_xlim,
-                                                    ylim = input$chr_ylim))
-        })
-        ## Update the plot if X range change
-        observeEvent(input$chr_xlim, {
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-
-            output$dfChromatograms <- renderDT(get_df(object_reactive(), i,
-                                                    xlim = input$chr_xlim,
-                                                    ylim = input$chr_ylim))
-        })
-        ## Update the plot if Y range change
-        observeEvent(input$chr_ylim, {
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-
-            output$dfChromatograms <- renderDT(get_df(object_reactive(), i,
-                                                    xlim = input$chr_xlim,
-                                                    ylim = input$chr_ylim))
-        })
-        ## Update the plot if color change
-        observeEvent(input$chr_color, {
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-        })
-        ## Update the plot if pch change
-        observeEvent(input$chr_pch, {
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-        })
-        ## Update the plot if cex change
-        observeEvent(input$chr_cex, {
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-        })
-        ## Update the plot if lwd change
-        observeEvent(input$chr_lwd, {
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-        })
-        ## Update the plot if bs change
-        observeEvent(input$chr_bs, {
-            output$plotChromatograms <- renderPlot(
-                ggplotChromatograms(object_reactive()[i], interactive = interactive,
-                                xlim = input$chr_xlim, ylim = input$chr_ylim,
-                                col = input$chr_color, pch = input$chr_pch,
-                                cex = input$chr_cex, lwd = input$chr_lwd,
-                                bs = input$chr_bs))
-        })
 
         output$plotChromatograms_hover_info <- renderUI({
             hover <- input$plotChromatograms_hover
@@ -255,9 +149,9 @@ browseChromatograms <- function(object = NULL) {
             v$intensity_orient <- v[, "intensity"]
 
             minimumIndex <- nearPoints(v, hover,
-                            xvar = "rtime", yvar = "intensity_orient", maxpoints = 1, panelvar1 = "mz", threshold = 5)
+                            xvar = "rtime", yvar = "intensity_orient",
+                            maxpoints = 1, panelvar1 = "mz", threshold = 5)
 
-            ## print(paste("UI PCA scores hover", hover$x, hover$y, minimumIndex))
             if (!nrow(minimumIndex)) {
                 return(NULL)
             }
@@ -270,7 +164,8 @@ browseChromatograms <- function(object = NULL) {
 
             left_px <- hover$coords_css$x
             top_px <- hover$coords_css$y
-            style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+            style <- paste0("position:absolute; z-index:100; ",
+                            "background-color: rgba(245, 245, 245, 0.85); ",
                             "left:", left_px + 7, "px; top:", top_px + 7, "px;")
 
             # actual tooltip created as wellPanel
@@ -283,7 +178,8 @@ browseChromatograms <- function(object = NULL) {
         output$downloadChromatograms <- downloadHandler(
             filename = paste0("chromatograms_index_",i,".png"),
             content = function(file) {
-                ggsave(ggplotChromatograms(object_reactive()[i], interactive = interactive,
+                ggsave(ggplotChromatograms(object_reactive()[i],
+                                interactive = interactive,
                                 xlim = input$chr_xlim, ylim = input$chr_ylim,
                                 col = input$chr_color, pch = input$chr_pch,
                                 cex = input$chr_cex, lwd = input$chr_lwd,
@@ -294,7 +190,8 @@ browseChromatograms <- function(object = NULL) {
 
         ## Chromatograms Overlay ----
         output$plotChromatograms_overlay <- renderPlot(
-            ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
+            ggplotChromatogramsOverlay(object_reactive(),
+                                interactive = interactive,
                                 xlim = input$chrOverlay_xlim,
                                 ylim = input$chrOverlay_ylim,
                                 col = input$chrOverlay_color,
@@ -307,139 +204,6 @@ browseChromatograms <- function(object = NULL) {
         output$dfChromatograms_overlay <- renderDT(get_df(object_reactive(),
                                                 xlim = input$chrOverlay_xlim,
                                                 ylim = input$chrOverlay_ylim))
-
-        ## Update the plot if X range change
-        observeEvent(input$chr_xlim, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-            output$dfChromatograms_overlay <- renderDT(get_df(object_reactive(),
-                                                xlim = input$chrOverlay_xlim,
-                                                ylim = input$chrOverlay_ylim))
-        })
-        ## Update the plot if Y range change
-        observeEvent(input$chr_ylim, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-            output$dfChromatograms_overlay <- renderDT(get_df(object_reactive(),
-                                                xlim = input$chrOverlay_xlim,
-                                                ylim = input$chrOverlay_ylim))
-        })
-        ## Update the plot if color change
-        observeEvent(input$chr_color, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-        })
-        ## Update the plot if pch change
-        observeEvent(input$chr_pch, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-        })
-        ## Update the plot if cex change
-        observeEvent(input$chr_cex, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-        })
-        ## Update the plot if lwd change
-        observeEvent(input$chr_lwd, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-        })
-        ## Update the plot if bs change
-        observeEvent(input$chr_bs, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-        })
-        ## Update the plot if check axes change
-        observeEvent(input$chrOverlay_showAxes, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-        })
-        ## Update the plot if check box change
-        observeEvent(input$chrOverlay_showBox, {
-            output$plotChromatograms_overlay <- renderPlot(
-                ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,
-                                xlim = input$chrOverlay_xlim,
-                                ylim = input$chrOverlay_ylim,
-                                col = input$chrOverlay_color,
-                                pch = input$chrOverlay_pch,
-                                cex = input$chrOverlay_cex,
-                                lwd = input$chrOverlay_lwd,
-                                bs = input$chrOverlay_bs,
-                                axes = input$chrOverlay_showAxes,
-                                frame.plot = input$chrOverlay_showBox))
-        })
 
         output$plotChromatograms_overlay_hover_info <- renderUI({
             hover <- input$plotChromatograms_overlay_hover
@@ -457,7 +221,8 @@ browseChromatograms <- function(object = NULL) {
             v$intensity_orient <- v[, "intensity"]
 
             minimumIndex <- nearPoints(v, hover,
-                            xvar = "rtime", yvar = "intensity_orient", maxpoints = 1, threshold = 5)
+                            xvar = "rtime", yvar = "intensity_orient",
+                            maxpoints = 1, threshold = 5)
 
             if (!nrow(minimumIndex)) {
                 return(NULL)
@@ -473,7 +238,8 @@ browseChromatograms <- function(object = NULL) {
 
             left_px <- hover$coords_css$x
             top_px <- hover$coords_css$y
-            style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+            style <- paste0("position:absolute; z-index:100; ",
+                            "background-color: rgba(245, 245, 245, 0.85); ",
                             "left:", left_px + 7, "px; top:", top_px + 7, "px;")
 
             # actual tooltip created as wellPanel
@@ -500,33 +266,8 @@ browseChromatograms <- function(object = NULL) {
                         filename = file)
             }, contentType = "image/png"
         )
+
     }
 
     shinyApp(ui, server)
-}
-
-
-get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
-    if(is.null(i)){
-        v_l <- peaksData(object)
-        mz_name <- mz(object)
-    } else{
-        v_l <- peaksData(object[i])
-        mz_name <- mz(object[i])
-    }
-    if(any(!is.na(mz_name)))
-        names(v_l) <- mz_name
-    v <- rbindlistWithRownames(v_l, idcol = "mz")
-    if(is.null(i))
-        v$mz <- as.character(v$mz)
-    else
-        v$mz <- NULL
-
-    v$rtime <- round(v$rtime, 2)
-    v$intensity <- round(v$intensity, 2)
-    if(!is.null(xlim))
-        v <- v[v$rtime >= xlim[1] & v$rtime <= xlim[2], ]
-    if(!is.null(ylim))
-        v <- v[v$intensity >= ylim[1] & v$intensity <= ylim[2], ]
-    v
 }

@@ -5,10 +5,15 @@ import(Chromatograms)
 import(htmltools)
 import(shiny)
 import(shinydashboard)
+importFrom(Chromatograms,
+  mz,
+  peaksData
+)
 importFrom(DT,
   DTOutput,
   renderDT
 )
+importFrom(Spectra,rbindlistWithRownames)
 importFrom(colourpicker,colourInput)
 importFrom(ggplot2,ggsave)
 importFrom(utils,packageVersion)

@@ -1,4 +1,4 @@
-
+## Function to create the GUI for the `chromatograms()` plot
 chrGui <- function (object){
     xrange <- round(unlist(rtime(object)), 2)
     yrange <- round(unlist(intensity(object)), 2)
@@ -6,11 +6,13 @@ chrGui <- function (object){
         column(
             width = 3,
             sliderInput("chr_xlim", "Resize X axes:",
-                        value = c(min(xrange), max(xrange)),
-                        min = min(xrange), max = max(xrange), dragRange = TRUE),
+                    value = c(min(xrange, na.rm = T), max(xrange, na.rm = T)),
+                    min = min(xrange, na.rm = T), max = max(xrange, na.rm = T),
+                    dragRange = TRUE),
             sliderInput("chr_ylim", "Resize Y axes:",
-                        value = c(min(yrange), max(yrange)),
-                        min = min(yrange), max = max(yrange), dragRange = TRUE),
+                    value = c(min(yrange, na.rm = T), max(yrange, na.rm = T)),
+                    min = min(yrange, na.rm = T), max = max(yrange, na.rm = T),
+                    dragRange = TRUE),
             colourInput("chr_color", "Select color: ", value = "#00000080"),
             numericInput("chr_bs", "Font size: ", value = 16, min = 1),
             numericInput("chr_pch", "Plotting symbol: ", value = 20,
@@ -41,7 +43,7 @@ chrGui <- function (object){
             ),
             hr(),
             plotOutput("plotChromatograms",
-                        hover    = hoverOpts(
+                        hover = hoverOpts(
                         id = "plotChromatograms_hover",
                         delay = 50,
                         delayType = "debounce",
