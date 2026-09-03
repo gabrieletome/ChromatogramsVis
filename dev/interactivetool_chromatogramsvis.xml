@@ -1,0 +1,160 @@
+<tool id="interactive_tool_chromatogramsvis" tool_type="interactive" name="ChromatogramsVis"
+      version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@"
+      license="BSD-3-Clause" profile="25.1">
+   <xrefs>
+       <xref type="bioconductor">Chromatograms</xref>
+   </xrefs>
+   <creator>
+     <!-- This currently gives a blank person icon without names nor orcid in Galaxy UI-->
+     <person>
+       <name>Gabriele Tomè</name>
+       <familyName>Tomè</familyName>
+       <affiliation>Institute for Biomedicine, EURAC Research, Bolzano, Italy</affiliation>
+       <orcid>0000-0002-3976-6068</orcid>
+     </person>
+     <person>
+       <givenName>Johannes</givenName>
+       <name>Johannes Rainer</name>
+       <affiliation>Institute for Biomedicine, EURAC Research, Bolzano, Italy</affiliation>
+       <orcid>0000-0002-6977-7147</orcid>
+     </person>
+   </creator>
+
+  <icon src="ChromatogramsVis.png"/>
+  <description>Visualization tool for Chromatograms Object</description>
+  <macros>
+    <token name="@TOOL_VERSION@">0.1.2</token>
+    <token name="@CONTAINER_VERSION@">0.1.2</token>
+    <token name="@VERSION_SUFFIX@">0</token>
+  </macros>
+
+  <edam_topics>
+    <edam_topic>topic_3172</edam_topic>
+    <edam_topic>topic_0092</edam_topic>
+  </edam_topics>
+
+  <edam_operations>
+    <edam_operation>operation_0337</edam_operation>
+  </edam_operations>
+
+  <requirements>
+    <container type="docker">chromatogramsvis:@CONTAINER_VERSION@</container>
+  </requirements>
+
+  <entry_points>
+    <entry_point name="Shiny ChromatogramsVis" requires_domain="True">
+      <port>3838</port>
+      <url>/</url>
+    </entry_point>
+  </entry_points>
+
+  <environment_variables>
+    <!-- Taken from Rstudio GXIT https://github.com/galaxyproject/galaxy/blob/dev/tools/interactive/interactivetool_rstudio.xml#L11 -->
+    <environment_variable name="HISTORY_ID">$__history_id__</environment_variable>
+    <environment_variable name="GALAXY_WEB_PORT">8080</environment_variable>
+    <environment_variable name="GALAXY_URL">$__galaxy_url__</environment_variable>
+    <environment_variable name="DEBUG">true</environment_variable>
+    <environment_variable name="DISABLE_AUTH">true</environment_variable>
+    <environment_variable name="API_KEY" inject="api_key" />
+  </environment_variables>
+
+  <command><![CDATA[
+    #import re
+    echo "[`date`] - Setting up for ChromatogramsVis as \$(id)." &&
+    ## Match the container user id to the host user/group id if supplied
+    if [ -n "\$USERID" ]; then
+            echo "[`date`] - Setting user id to \$USERID." &&
+            usermod -u "\$USERID" rstudio;
+    fi &&
+    if [ -n "\$GROUPID" ]; then
+      echo "[`date`] - Setting user group to \$GROUPID." &&
+      groupmod -g "\$GROUPID" rstudio;
+    fi &&
+
+    ## This is where GalaxyConnector places files copied from Galaxy
+    mkdir -p ./chromatogramsvis_outputs &&
+    chmod 777 ./chromatogramsvis_outputs &&
+
+    echo "[`date`] - Creating Renviron" &&
+    echo "\n_GALAXY_JOB_HOME_DIR=\$_GALAXY_JOB_HOME_DIR" >> /usr/local/lib/R/etc/Renviron.site;
+
+  shiny-server 2>&1 > /var/log/chromatogramsvis-gxit-01.log
+  ## The log file can be found inside the container, for debugging purposes
+
+  ]]>
+  </command>
+  <configfiles>
+    <inputs name="inputs" data_style="paths" filename="chromatogramsvis-gxit-inputs.json" />
+  </configfiles>
+
+  <inputs>
+    <conditional name="input_mode">
+      <param name="mode" type="select" label="Input Mode">
+        <option value="raw">mzML file</option>
+        <option value="rds">RDS with Chromatograms object</option>
+      </param>
+      <when value="raw">
+        <param name="raw_file" type="data" label="mzML file"
+               help="..." />
+      </when>
+      <when value="rds">
+        <param name="rds_file" type="data" label="RDS file"
+               help="..." />
+      </when>
+    </conditional>
+  </inputs>
+
+    <!-- <outputs>
+      <data name="metfamily_project" format="gz" label="MetFamily Interactive Tool"></data>
+      <collection name="output_collection" type="list" label="MetFamily outputs">
+        <discover_datasets pattern="__name_and_ext__" directory="metfamily_outputs/" assign_primary_output="true" recurse="true"/>
+      </collection>
+    </outputs> -->
+
+  <!--
+      <outputs>
+        <data name="rstudio" format="txt" label="RStudio Interactive Tool"></data>
+        <collection name="output_collection" type="list" label="RStudio outputs">
+            <discover_datasets pattern="__name_and_ext__" directory="rstudio_outputs/" assign_primary_output="true" recurse="true"/>
+        </collection>
+    </outputs>
+
+  -->
+
+  <tests>
+    <!-- Tests are difficult with GxITs! -->
+  </tests>
+
+  <help> <![CDATA[
+ChromatogramsVis Interactive Tool
+=================================================
+
+**ChromatogramsVis**: Visualising and Exploring Chromatograms Data
+
+Inputs Required
+---------------
+
+ChromatogramsVis requires the following input file for a new visualization:
+
+1. **mzML file**
+
+Output
+------
+
+- ...
+
+Usage Tips
+----------
+
+- ...
+
+Further Resources
+-----------------
+
+- ...
+  ]]></help>
+  <citations>
+    <citation type="bibtex">
+    </citation>
+  </citations>
+</tool>

@@ -4,7 +4,7 @@ chrOverlayGui <- function (object){
     yrange <- round(unlist(intensity(object)), 2)
     tagList(
         column(
-            width = 3,
+            width = 2,
             sliderInput("chrOverlay_xlim", "Resize X axes:",
                     value = c(min(xrange, na.rm = T), max(xrange, na.rm = T)),
                     min = min(xrange, na.rm = T), max = max(xrange, na.rm = T),
@@ -14,7 +14,7 @@ chrOverlayGui <- function (object){
                     min = min(yrange, na.rm = T), max = max(yrange, na.rm = T),
                     dragRange = TRUE),
             colourInput("chrOverlay_color", "Select color: ",
-                        value = "#00000080"),
+                        value = "#00000080", allowTransparent = TRUE),
             numericInput("chrOverlay_bs", "Font size: ", value = 16, min = 1),
             numericInput("chrOverlay_pch", "Plotting symbol: ", value = 20,
                          min = 0, max = 25),
@@ -26,7 +26,7 @@ chrOverlayGui <- function (object){
             checkboxInput("chrOverlay_showBox", "Show frame box", value = TRUE)
         ),
         column(
-            width = 5,
+            width = 6,
             downloadButton("downloadChromatograms_overlay",
                             "Download the figure"),
             hr(),

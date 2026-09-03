@@ -4,7 +4,7 @@ chrGui <- function (object){
     yrange <- round(unlist(intensity(object)), 2)
     tagList(
         column(
-            width = 3,
+            width = 2,
             sliderInput("chr_xlim", "Resize X axes:",
                     value = c(min(xrange, na.rm = T), max(xrange, na.rm = T)),
                     min = min(xrange, na.rm = T), max = max(xrange, na.rm = T),
@@ -13,7 +13,8 @@ chrGui <- function (object){
                     value = c(min(yrange, na.rm = T), max(yrange, na.rm = T)),
                     min = min(yrange, na.rm = T), max = max(yrange, na.rm = T),
                     dragRange = TRUE),
-            colourInput("chr_color", "Select color: ", value = "#00000080"),
+            colourInput("chr_color", "Select color: ", value = "#00000080",
+                        allowTransparent = TRUE),
             numericInput("chr_bs", "Font size: ", value = 16, min = 1),
             numericInput("chr_pch", "Plotting symbol: ", value = 20,
                          min = 0, max = 25),
@@ -23,7 +24,7 @@ chrGui <- function (object){
                          min = 0.1, step = 0.1)
         ),
         column(
-            width = 5,
+            width = 6,
             fluidRow(
                 column(
                     width = 3,

@@ -24,7 +24,8 @@ Imports:
    DT,
    ggplot2,
    htmltools,
-   Spectra
+   Spectra,
+   jsonlite
 Suggests:
    mzR,
    MsDataHub,
