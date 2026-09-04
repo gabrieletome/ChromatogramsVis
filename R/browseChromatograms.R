@@ -12,8 +12,6 @@
 #'
 #' @return An object that represents the app.
 #'
-#' @export
-#'
 #' @import shiny
 #'
 #' @import shinydashboard
@@ -29,6 +27,8 @@
 #' @import htmltools
 #'
 #' @author Gabriele Tomè
+#'
+#' @export
 browseChromatograms <- function(object = NULL) {
     isGalaxyIE <- FALSE
     if(!is.null(object)){

@@ -1,3 +1,4 @@
+## R version 4.6.1
 FROM rocker/shiny:4.6.1
 
 LABEL maintainer="Gabriele Tomè <gabriele.tome@eurac.edu>"
@@ -13,8 +14,9 @@ ADD DESCRIPTION /tmp/ChromatogramsVis/DESCRIPTION
 WORKDIR /tmp/ChromatogramsVis/
 RUN R -e 'install.packages(c("pak", "devtools", "BiocManager"))'
 RUN R -e 'pak::local_install_deps()'
+## Install manually otherwise it is missing.
 RUN R -e 'pak::pak("mzR")'
-## After update of Chromatograms package, remove the following line
+## After update of Chromatograms package, remove the following line.
 RUN R -e 'pak::pak("Rformassspectrometry/Chromatograms@gabri")'
 
 ADD . /tmp/ChromatogramsVis

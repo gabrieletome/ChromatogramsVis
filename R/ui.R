@@ -1,9 +1,32 @@
-library(shiny)
-library(shinydashboard)
-library(colourpicker)
-library(htmltools)
-
+#' Variable to check if the Shiny is running inside Galaxy
 isGalaxyIE <- !is.na(Sys.getenv("_GALAXY_JOB_HOME_DIR", unset = NA))
+
+#' ChromatogramsVis Dashboard UI
+#'
+#' Creates the user interface for the ChromatogramsVis Shiny application.
+#' Provides options to load chromatogram data from various sources (R console,
+#' raw files, RDS objects, or Galaxy history) and visualize them in different
+#' plot formats.
+#'
+#' @return A Shiny dashboard page object containing the UI structure
+#'
+#' @details
+#' The UI includes:
+#' - A sidebar with import method selection and navigation tabs
+#' - Main content area with chromatogram visualization panels
+#' - Conditional panels that display based on the selected import method
+#'
+#' @import shiny
+#'
+#' @import shinydashboard
+#'
+#' @importFrom colourpicker colourInput
+#'
+#' @import htmltools
+#'
+#' @author Gabriele Tomè
+#'
+#' @noRd
 ui <- dashboardPage(
     skin = "black",
     title = "ChromatogramsVis",
@@ -12,7 +35,9 @@ ui <- dashboardPage(
     ),
     sidebar = dashboardSidebar(
         radioButtons("input_cat", "Select import method: ",
-                    choices = c("From R", "Raw data", "R object",
+                    choices = c(
+                            na.omit(ifelse(isGalaxyIE, NA, "From R")),
+                            "Raw data", "R object",
                             na.omit(ifelse(isGalaxyIE, "Galaxy History", NA))),
                     selected = "From R"),
         conditionalPanel('input.input_cat == "From R"', {

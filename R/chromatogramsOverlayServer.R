@@ -1,5 +1,24 @@
-
-## Update the plot if X range change
+#' Server Logic for Chromatograms Overlay Plot
+#'
+#' @name chromatogramsOverlayServer
+#'
+#' @description
+#'
+#' Server-side observers for the chromatograms overlay plot display.
+#' Handles reactive updates to the overlay plot and data table when user inputs
+#' change.
+#'
+#' @details
+#' This module contains multiple `observeEvent` handlers that update the
+#' overlay plot and data table when the user modifies:
+#' - X/Y axis ranges
+#' - Plot colors and symbols
+#' - Line width and font size
+#' - Axis and frame box visibility
+#'
+#' @author Gabriele Tomè
+#'
+#' @noRd
 observeEvent(input$chr_xlim, {
     output$plotChromatograms_overlay <- renderPlot(
         ggplotChromatogramsOverlay(object_reactive(), interactive = interactive,

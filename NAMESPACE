@@ -2,6 +2,7 @@
 
 export(browseChromatograms)
 import(Chromatograms)
+import(ggplot2)
 import(htmltools)
 import(shiny)
 import(shinydashboard)

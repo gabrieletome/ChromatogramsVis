@@ -23,8 +23,8 @@
   <icon src="ChromatogramsVis.png"/>
   <description>Visualization tool for Chromatograms Object</description>
   <macros>
-    <token name="@TOOL_VERSION@">0.1.2</token>
-    <token name="@CONTAINER_VERSION@">0.1.2</token>
+    <token name="@TOOL_VERSION@">0.1.3</token>
+    <token name="@CONTAINER_VERSION@">0.1.3</token>
     <token name="@VERSION_SUFFIX@">0</token>
   </macros>
 
@@ -105,21 +105,12 @@
   </inputs>
 
     <!-- <outputs>
-      <data name="metfamily_project" format="gz" label="MetFamily Interactive Tool"></data>
-      <collection name="output_collection" type="list" label="MetFamily outputs">
-        <discover_datasets pattern="__name_and_ext__" directory="metfamily_outputs/" assign_primary_output="true" recurse="true"/>
+      <data name="chromatogramsvis_project" format="gz" label="ChromatogramsVis Interactive Tool"></data>
+      <collection name="output_collection" type="list" label="ChromatogramsVis outputs">
+        <discover_datasets pattern="__name_and_ext__" directory="chromatogramsvis_outputs/" assign_primary_output="true" recurse="true"/>
       </collection>
     </outputs> -->
 
-  <!--
-      <outputs>
-        <data name="rstudio" format="txt" label="RStudio Interactive Tool"></data>
-        <collection name="output_collection" type="list" label="RStudio outputs">
-            <discover_datasets pattern="__name_and_ext__" directory="rstudio_outputs/" assign_primary_output="true" recurse="true"/>
-        </collection>
-    </outputs>
-
-  -->
 
   <tests>
     <!-- Tests are difficult with GxITs! -->

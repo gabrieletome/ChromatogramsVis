@@ -1,4 +1,19 @@
-## Function to create the GUI for the `chromatograms_overlay()` plot
+#' Create GUI for Chromatograms Overlay Plot
+#'
+#' Generates the user interface for the `chromatograms_overlay()` plot display.
+#' Provides interactive controls for customizing X/Y axis ranges, colors,
+#' plotting symbols, and overlay-specific visual parameters.
+#'
+#' @param object A chromatograms object to display.
+#'
+#' @return A Shiny tagList containing the UI layout with three columns:
+#'   - Left: Input controls for axis ranges, colors, and visual parameters
+#'   - Middle: Plot display with hover information and download button
+#'   - Right: Data table
+#'
+#' @author Gabriele Tomè
+#'
+#' @noRd
 chrOverlayGui <- function (object){
     xrange <- round(unlist(rtime(object)), 2)
     yrange <- round(unlist(intensity(object)), 2)

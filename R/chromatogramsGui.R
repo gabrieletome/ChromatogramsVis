@@ -1,4 +1,19 @@
-## Function to create the GUI for the `chromatograms()` plot
+#' Create GUI for Chromatograms Plot
+#'
+#' Generates the user interface for the `chromatograms()` plot display.
+#' Provides interactive controls for customizing X/Y axis ranges, colors,
+#' plotting symbols, and line properties.
+#'
+#' @param object A chromatograms object to display.
+#'
+#' @return A Shiny tagList containing the UI layout with three columns:
+#'   - Left: Input controls for axis ranges, colors, and visual parameters
+#'   - Middle: Navigation buttons, plot with hover information
+#'   - Right: Download button and data table
+#'
+#' @author Gabriele Tomè
+#'
+#' @noRd
 chrGui <- function (object){
     xrange <- round(unlist(rtime(object)), 2)
     yrange <- round(unlist(intensity(object)), 2)

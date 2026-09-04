@@ -16,6 +16,9 @@
 #' @importFrom Chromatograms peaksData mz
 #'
 #' @importFrom Spectra rbindlistWithRownames
+#'
+#' @author Gabriele Tomè
+#'
 #' @noRd
 get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
     if(is.null(i)){

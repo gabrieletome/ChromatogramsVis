@@ -1,10 +1,39 @@
-library(shiny)
-library(shinydashboard)
-library(DT)
-library(ggplot2)
-library(Chromatograms)
-library(htmltools)
-
+#' ChromatogramsVis Dashboard Server
+#'
+#' Server logic for the ChromatogramsVis Shiny application.
+#' Handles chromatogram data loading from multiple sources (R console, raw
+#' files, RDS objects, or Galaxy history) and manages interactive visualization
+#' rendering.
+#'
+#' @param input Shiny input object
+#'
+#' @param output Shiny output object
+#'
+#' @param session Shiny session object
+#'
+#' @details
+#' The server function manages:
+#' - Data loading from various input sources with conditional observers
+#' - Reactive state management for loaded chromatogram objects
+#' - Interactive chromatogram plotting with hover information
+#' - Overlay visualization of multiple chromatograms
+#' - Data table rendering and download handlers
+#'
+#' @import shiny
+#'
+#' @import shinydashboard
+#'
+#' @importFrom DT renderDT DTOutput
+#'
+#' @import ggplot2
+#'
+#' @import Chromatograms
+#'
+#' @import htmltools
+#'
+#' @author Gabriele Tomè
+#'
+#' @noRd
 server <- function(input, output, session) {
     ## Load Chromatograms function
     source("R/chromatogramsServer.R", local = TRUE)
@@ -68,6 +97,12 @@ server <- function(input, output, session) {
         if (config$input_mode$mode == "rds") {
             filePath <- config$input_mode$rds_file
             object <- readRDS(filePath)
+        } else if (config$input_mode$mode == "raw") {
+            filePath <- config$input_mode$raw_file
+            be <- backendInitialize(ChromBackendMzR(), files = filePath)
+            object <- Chromatograms(be)
+        } else {
+            stop("Invalid input mode")
         }
 
         object_reactive(object)
@@ -78,7 +113,6 @@ server <- function(input, output, session) {
 
         ## Not here, but for completeness:
         ## Here is where the output would go:
-
         setwd(paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),"../working/chromatogramsvis_outputs",sep="/"))
 
     })

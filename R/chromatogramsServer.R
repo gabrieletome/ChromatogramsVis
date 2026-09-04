@@ -1,5 +1,24 @@
-
-## update the plot if the slider is changed
+#' Server Logic for Chromatograms Plot
+#'
+#' @name chromatogramsServer
+#'
+#' @description
+#'
+#' Server-side observers for the chromatograms plot display.
+#' Handles reactive updates to the plot and data table when user inputs change.
+#'
+#' @details
+#' This module contains multiple `observeEvent` handlers that update the plot
+#' and data table when the user modifies:
+#' - Slider position for spectrum browsing
+#' - Navigation buttons (previous/next spectrum)
+#' - X/Y axis ranges
+#' - Plot colors and symbols
+#' - Line width and font size
+#'
+#' @author Gabriele Tomè
+#'
+#' @noRd
 observeEvent(input$slider, {
     i <<- as.integer(input$slider)
     output$plotChromatograms <- renderPlot(

@@ -1,9 +1,7 @@
+## Global variable for the Shiny App
+## Object set to NULL since it is not pass via R console
 object <- NULL
-if(!is.null(object)){
-    stopifnot(inherits(object, "Chromatograms"))
-    if (!length(object))
-        stop("The 'Chromatograms' object is empty.")
-}
+## Index of the chromatogram to be visualized
 i <- 1
 
 ## running as Galaxy Interactive Environment ?

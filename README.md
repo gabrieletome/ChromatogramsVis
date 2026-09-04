@@ -1,5 +1,5 @@
 A simple package for (interactive) visualisation and exploration of
-mass spectrometry data stored in
+data stored in
 [`Chromatograms`](https://rformassspectrometry.github.io/Chromatograms/) objects.
 
 To install the package:
