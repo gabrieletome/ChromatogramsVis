@@ -1,10 +1,12 @@
-## Load required libraries
+## Load required libraries for Shiny Server
 library(shiny)
 library(shinydashboard)
 library(colourpicker)
 library(htmltools)
 
 #' Variable to check if the Shiny is running inside Galaxy
+#'
+#' @keywords internal
 isGalaxyIE <- !is.na(Sys.getenv("_GALAXY_JOB_HOME_DIR", unset = NA))
 
 #' ChromatogramsVis Dashboard UI
@@ -24,7 +26,7 @@ isGalaxyIE <- !is.na(Sys.getenv("_GALAXY_JOB_HOME_DIR", unset = NA))
 #'
 #' @author Gabriele Tomè
 #'
-#' @noRd
+#' @keywords internal
 ui <- dashboardPage(
     skin = "black",
     title = "ChromatogramsVis",

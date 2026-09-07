@@ -1,5 +1,9 @@
 # ChromatogramsVis 0.1
 
+## Changes in 0.1.4
+
+- Refactor following Bioconductor guidelines
+
 ## Changes in 0.1.3
 
 - Build Docker with ChromatogramsVis.

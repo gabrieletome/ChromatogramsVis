@@ -1,7 +1,10 @@
 library(testthat)
-library(ChromatogramsVis)
 library(MsDataHub)
+library(Chromatograms)
+library(ChromatogramsVis)
 
-fl <- MsDataHub::PestMix1_DDA.mzML()
-pest_ms2 <- filterMsLevel(Chromatograms(fl), 2L)
-pest_ms2 <- pest_ms2[c(808, 809, 945:955)]
+fl <- MRM.standmix.5.mzML()
+be <- backendInitialize(ChromBackendMzR(), files = fl)
+chr_mzr <- Chromatograms(be)
+
+test_check("ChromatogramsVis")

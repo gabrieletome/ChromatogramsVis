@@ -1,8 +1,6 @@
 ## Global variable for the Shiny App
 ## Object set to NULL since it is not pass via R console
 object <- NULL
-## Index of the chromatogram to be visualized
-i <- 1
 
 ## running as Galaxy Interactive Environment ?
 ## This variable is either set directly by Galaxy,

@@ -1,11 +1,14 @@
 library(shiny)
+library(shinydashboard)
+library(colourpicker)
+library(DT)
+library(htmltools)
+library(ggplot2)
+library(Chromatograms)
+library(Spectra)
 
-## Load all the functions of ChromatogramsVis package
-devtools::load_all()
-
-## Load GUI and backend of the Shiny App
-source("R/ui.R", local = TRUE)
-source("R/server.R", local = TRUE)
+## Load ChromatogramsVis functions, GUI and server
+library(ChromatogramsVis)
 
 ## Run the Shiny App
-shinyApp(ui, server)
+browseChromatograms()

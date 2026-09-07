@@ -36,10 +36,6 @@ browseChromatograms <- function(object = NULL) {
         if (!length(object))
             stop("The 'Chromatograms' object is empty.")
     }
-    i <- 1
-
-    source("R/ui.R", local = TRUE)
-    source("R/server.R", local = TRUE)
-
-    shinyApp(ui, server)
+    shinyApp(ui, server(object))
 }
+
