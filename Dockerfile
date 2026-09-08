@@ -25,4 +25,4 @@ RUN R CMD INSTALL /tmp/ChromatogramsVis
 EXPOSE 3838
 WORKDIR /srv/shiny-server
 RUN rm -rf *
-ADD . /srv/shiny-server
+ADD ./inst/app/ /srv/shiny-server

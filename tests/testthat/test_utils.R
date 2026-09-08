@@ -1,3 +1,8 @@
+library(MsDataHub)
+f <- MRM.standmix.5.mzML()
+be <- backendInitialize(ChromBackendMzR(), files = f)
+chr_mzr <- Chromatograms(be)
+
 test_that("get_df works", {
 
     res <- get_df(chr_mzr)

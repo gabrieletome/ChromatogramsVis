@@ -1,5 +1,6 @@
 ## ChromatogramsPlot ----
 ## start by displaying the first spectrum
+# nocov start
 base_chromatograms <- function(input, output, session, object_reactive, i,
                                 id = "chromatogramsPlot") {
     ns <- NS(id)
@@ -86,5 +87,5 @@ base_chromatograms <- function(input, output, session, object_reactive, i,
                     filename = file)
         }, contentType = "image/png"
     )
-
 }
+# nocov end

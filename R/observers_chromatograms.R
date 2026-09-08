@@ -19,6 +19,7 @@
 #' @author Gabriele Tomè
 #'
 #' @keywords internal
+# nocov start
 slider <- function(input, output, session, object_reactive, i,
                     id = "chromatogramsPlot") {
     ns <- NS(id)
@@ -40,8 +41,10 @@ slider <- function(input, output, session, object_reactive, i,
                                         ylim = input[[ns("chr_ylim")]]))
     })
 }
+# nocov end
 
 ## update the plot with the next spectrum
+# nocov start
 nxt <- function(input, output, session, object_reactive, i,
                     id = "chromatogramsPlot") {
     ns <- NS(id)
@@ -65,8 +68,10 @@ nxt <- function(input, output, session, object_reactive, i,
                                 ylim = input[[ns("chr_ylim")]]))
     })
 }
+# nocov end
 
 ## update the plot with the previous spectrum
+# nocov start
 prv <- function(input, output, session, object_reactive, i,
                     id = "chromatogramsPlot") {
     ns <- NS(id)
@@ -89,3 +94,4 @@ prv <- function(input, output, session, object_reactive, i,
                                 ylim = input[[ns("chr_ylim")]]))
     })
 }
+# nocov end

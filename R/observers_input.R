@@ -1,4 +1,5 @@
 ## Clean if radioButton change
+# nocov start
 input_cat <- function(input, output, session, object_reactive) {
     observeEvent(input$input_cat, {
         print(paste("input_cat:", input$input_cat))
@@ -13,8 +14,10 @@ input_cat <- function(input, output, session, object_reactive) {
         object_reactive(NULL)
     })
 }
+# nocov end
 
 ## Load from R parameter
+# nocov start
 load_r_obj <- function(input, output, session, object, object_reactive) {
     observeEvent(input$load_r_obj, {
         print(object)
@@ -28,8 +31,10 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
         })
     })
 }
+# nocov end
 
 ## Load raw file
+# nocov start
 load_raw_file <- function(input, output, session, object_reactive) {
     observeEvent(input$load_raw_file, {
         f <- input$raw_file$datapath
@@ -43,8 +48,10 @@ load_raw_file <- function(input, output, session, object_reactive) {
                 renderUI(chrOverlayGui("chromatogramsOverlayPlot", object_reactive()))
     })
 }
+# nocov end
 
 ## Load RDS file
+# nocov start
 load_rds_file <- function(input, output, session, object_reactive) {
     observeEvent(input$load_rds_file, {
         f <- input$rds_file$datapath
@@ -61,8 +68,10 @@ load_rds_file <- function(input, output, session, object_reactive) {
         })
     })
 }
+# nocov end
 
 ## Load Galaxy history
+# nocov start
 load_galaxy <- function(input, output, session, object_reactive) {
     observeEvent(input$load_galaxy, {
         setwd(paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),"../working",sep="/"))
@@ -92,3 +101,4 @@ load_galaxy <- function(input, output, session, object_reactive) {
         setwd(paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),"../working/chromatogramsvis_outputs",sep="/"))
     })
 }
+# nocov end

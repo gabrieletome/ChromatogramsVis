@@ -33,6 +33,7 @@
 #' @author Gabriele Tomè
 #'
 #' @keywords internal
+# nocov start
 server <- function(object){
     function(input, output, session) {
         i <- reactiveVal(1)
@@ -56,3 +57,4 @@ server <- function(object){
 
     }
 }
+# nocov end

@@ -1,4 +1,5 @@
 ## Chromatograms Overlay ----
+# nocov start
 base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                                         id = "chromatogramsOverlayPlot") {
     ns <- NS(id)
@@ -88,3 +89,4 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
         }, contentType = "image/png"
     )
 }
+# nocov end
