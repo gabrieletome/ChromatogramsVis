@@ -4,7 +4,7 @@
 \alias{ui}
 \title{ChromatogramsVis Dashboard UI}
 \usage{
-ui
+ui(isGalaxyIE)
 }
 \value{
 A Shiny dashboard page object containing the UI structure

@@ -4,7 +4,7 @@
 \alias{browseChromatograms}
 \title{Browse Chromatograms in a Chromatograms object}
 \usage{
-browseChromatograms(object = NULL)
+browseChromatograms(object = NULL, isGalaxyIE = FALSE)
 }
 \arguments{
 \item{object}{A non-empty instance of class \code{Chromatograms}.}

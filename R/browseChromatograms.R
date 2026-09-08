@@ -29,13 +29,13 @@
 #' @author Gabriele Tomè
 #'
 #' @export
-browseChromatograms <- function(object = NULL) {
-    isGalaxyIE <- FALSE
+browseChromatograms <- function(object = NULL, isGalaxyIE = FALSE) {
     if(!is.null(object)){
         stopifnot(inherits(object, "Chromatograms"))
         if (!length(object))
             stop("The 'Chromatograms' object is empty.")
     }
-    shinyApp(ui, server(object))
+
+    shinyApp(ui(isGalaxyIE), server(object))
 }
 
