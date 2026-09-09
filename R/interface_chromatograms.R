@@ -72,10 +72,17 @@ chrGui <- function (id, object){
         ),
         column(
             width = 4,
-            column(
-                width = 6,
-                downloadButton(ns("downloadChromatograms"),
-                                "Download the figure")
+            fluidRow(
+                column(
+                    width = 6,
+                    downloadButton(ns("downloadChromatograms"),
+                            "Download the figure")
+                ),
+                column(
+                    width = 6,
+                    downloadButton(ns("downloadChromatograms_RDS"),
+                            "Download RDS object")
+                )
             ),
             hr(),
             DTOutput(ns("dfChromatograms"))

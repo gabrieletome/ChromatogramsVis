@@ -20,15 +20,22 @@ input_cat <- function(input, output, session, object_reactive) {
 # nocov start
 load_r_obj <- function(input, output, session, object, object_reactive) {
     observeEvent(input$load_r_obj, {
-        print(object)
-        object_reactive(object)
+        if (is.null(object)) {
+            showModal(modalDialog(
+                title = "Missing object",
+                "Something went wrong! Missing R object parameter"
+            ))
+        } else {
+            print(object)
+            object_reactive(object)
 
-        output$chromatogramsPlot <- renderUI({
-            chrGui("chromatogramsPlot", object_reactive())
-        })
-        output$chromatogramsOverlayPlot <- renderUI({
-            chrOverlayGui("chromatogramsOverlayPlot", object_reactive())
-        })
+            output$chromatogramsPlot <- renderUI({
+                chrGui("chromatogramsPlot", object_reactive())
+            })
+            output$chromatogramsOverlayPlot <- renderUI({
+                chrOverlayGui("chromatogramsOverlayPlot", object_reactive())
+            })
+        }
     })
 }
 # nocov end
@@ -37,15 +44,22 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
 # nocov start
 load_raw_file <- function(input, output, session, object_reactive) {
     observeEvent(input$load_raw_file, {
-        f <- input$raw_file$datapath
+        if (is.null(input$raw_file)) {
+            showModal(modalDialog(
+                title = "Missing file",
+                "Missing file. Please provide a valid input."
+            ))
+        } else {
+            f <- input$raw_file$datapath
 
-        be <- backendInitialize(ChromBackendMzR(), files = f)
+            be <- backendInitialize(ChromBackendMzR(), files = f)
 
-        object_reactive(Chromatograms(be))
-        print(object_reactive())
-        output$chromatogramsPlot <- renderUI(chrGui("chromatogramsPlot", object_reactive()))
-        output$chromatogramsOverlayPlot <-
-                renderUI(chrOverlayGui("chromatogramsOverlayPlot", object_reactive()))
+            object_reactive(Chromatograms(be))
+            print(object_reactive())
+            output$chromatogramsPlot <- renderUI(chrGui("chromatogramsPlot", object_reactive()))
+            output$chromatogramsOverlayPlot <-
+                    renderUI(chrOverlayGui("chromatogramsOverlayPlot", object_reactive()))
+        }
     })
 }
 # nocov end
@@ -54,18 +68,25 @@ load_raw_file <- function(input, output, session, object_reactive) {
 # nocov start
 load_rds_file <- function(input, output, session, object_reactive) {
     observeEvent(input$load_rds_file, {
-        f <- input$rds_file$datapath
-        object <- readRDS(f)
+        if (is.null(input$rds_file)) {
+            showModal(modalDialog(
+                title = "Missing file",
+                "Missing file. Please provide a valid input."
+            ))
+        } else {
+            f <- input$rds_file$datapath
+            object <- readRDS(f)
 
-        object_reactive(object)
-        print(object_reactive())
-        output$chromatogramsPlot <- renderUI({
-            chrGui("chromatogramsPlot", object_reactive())
-        })
-        output$chromatogramsOverlayPlot <- renderUI({
-            chrOverlayGui("chromatogramsOverlayPlot",
-                         object_reactive())
-        })
+            object_reactive(object)
+            print(object_reactive())
+            output$chromatogramsPlot <- renderUI({
+                chrGui("chromatogramsPlot", object_reactive())
+            })
+            output$chromatogramsOverlayPlot <- renderUI({
+                chrOverlayGui("chromatogramsOverlayPlot",
+                            object_reactive())
+            })
+        }
     })
 }
 # nocov end
@@ -87,7 +108,10 @@ load_galaxy <- function(input, output, session, object_reactive) {
             be <- backendInitialize(ChromBackendMzR(), files = filePath)
             object <- Chromatograms(be)
         } else {
-            stop("Invalid input mode")
+            showModal(modalDialog(
+                title = "Invalid input",
+                "Please provide a valid input."
+            ))
         }
 
         object_reactive(object)

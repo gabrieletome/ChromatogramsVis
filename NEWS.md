@@ -1,5 +1,12 @@
 # ChromatogramsVis 0.1
 
+## Changes in 0.1.5
+
+- Add tests based on `shinytest2`
+- Refactor of Galaxy Job identification variable
+- Add check for missing input
+- Add export button
+
 ## Changes in 0.1.4
 
 - Refactor following Bioconductor guidelines

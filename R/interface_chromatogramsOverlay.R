@@ -46,8 +46,6 @@ chrOverlayGui <- function (id, object){
         ),
         column(
             width = 6,
-            downloadButton(ns("downloadChromatograms_overlay"),
-                            "Download the figure"),
             hr(),
             plotOutput(ns("plotChromatograms_overlay"),
                         hover = hoverOpts(
@@ -59,6 +57,18 @@ chrOverlayGui <- function (id, object){
         ),
         column(
             width = 4,
+            fluidRow(
+                column(
+                    width = 6,
+                    downloadButton(ns("downloadChromatograms_overlay"),
+                            "Download the figure")
+                ),
+                column(
+                    width = 6,
+                    downloadButton(ns("downloadChromatograms_overlay_RDS"),
+                            "Download RDS object")
+                )
+            ),
             hr(),
             DTOutput(ns("dfChromatograms_overlay"))
         )

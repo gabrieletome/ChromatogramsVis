@@ -1,6 +1,6 @@
 Package: ChromatogramsVis
 Title: Visualising and Exploring Chromatograms Data
-Version: 0.1.4
+Version: 0.1.5
 Description: This package defines a set of helper function to
     visualise and explore mass spectrometry data stored as Chromatograms
     objects.

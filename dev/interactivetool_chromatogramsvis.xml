@@ -23,8 +23,8 @@
   <icon src="ChromatogramsVis.png"/>
   <description>Visualization tool for Chromatograms Object</description>
   <macros>
-    <token name="@TOOL_VERSION@">0.1.4</token>
-    <token name="@CONTAINER_VERSION@">0.1.4</token>
+    <token name="@TOOL_VERSION@">0.1.5</token>
+    <token name="@CONTAINER_VERSION@">0.1.5</token>
     <token name="@VERSION_SUFFIX@">0</token>
   </macros>
 

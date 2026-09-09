@@ -10,6 +10,12 @@
 #'
 #' @param object A non-empty instance of class `Chromatograms`.
 #'
+#' @param isGalaxyIE A logical value indicating whether the Shiny app is running
+#'     inside a Galaxy Interactive Environment (IE). If `TRUE`, the app will
+#'     adjust its behavior to accommodate the Galaxy environment. If `FALSE`,
+#'     the app will run in a standard Shiny environment. The default value is
+#'     `FALSE`.
+#'
 #' @return An object that represents the app.
 #'
 #' @import shiny

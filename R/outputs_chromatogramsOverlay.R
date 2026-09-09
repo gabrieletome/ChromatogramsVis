@@ -75,7 +75,6 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
         filename = "chromatogramsOverlay.png",
         content = function(file) {
             ggsave(ggplotChromatogramsOverlay(object_reactive(),
-
                             xlim = input[[ns("chrOverlay_xlim")]],
                             ylim = input[[ns("chrOverlay_ylim")]],
                             col = input[[ns("chrOverlay_color")]],
@@ -87,6 +86,33 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                             frame.plot = input[[ns("chrOverlay_showBox")]]),
                     filename = file)
         }, contentType = "image/png"
+    )
+
+    output[[ns("downloadChromatograms_overlay_RDS")]] <- downloadHandler(
+        filename = paste0("chromatograms_obj.rds"),
+        content = function(file) {
+            obj <- object_reactive()
+            xrange <- round(unlist(rtime(obj)), 2)
+            yrange <- round(unlist(intensity(obj)), 2)
+
+            if (input[[ns("chrOverlay_xlim")]][1] != min(xrange, na.rm = TRUE) |
+               input[[ns("chrOverlay_xlim")]][2] != max(xrange, na.rm = TRUE)) {
+                obj <- filterPeaksData(obj, variables = "rtime",
+                                        ranges = c(min(xrange, na.rm = TRUE),
+                                                   max(xrange, na.rm = TRUE)))
+
+            }
+
+            if (input[[ns("chrOverlay_ylim")]][1] != min(yrange, na.rm = TRUE) |
+               input[[ns("chrOverlay_ylim")]][2] != max(yrange, na.rm = TRUE)) {
+                obj <- filterPeaksData(obj, variables = "intensity",
+                                        ranges = c(min(yrange, na.rm = TRUE),
+                                                   max(yrange, na.rm = TRUE)))
+            }
+
+            obj <- setBackend(obj, ChromBackendMemory())
+            saveRDS(obj, file = file)
+        }
     )
 }
 # nocov end

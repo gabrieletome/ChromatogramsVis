@@ -2,6 +2,7 @@ library(testthat)
 library(shinytest2)
 library(MsDataHub)
 library(Chromatograms)
+library(ChromatogramsVis)
 
 # A data.frame with chromatogram variables.
 cdata <- data.frame(
@@ -29,5 +30,6 @@ f <- MRM.standmix.5.mzML()
 be <- backendInitialize(ChromBackendMzR(), files = f)
 chr_mzr <- Chromatograms(be)
 
+test_check("ChromatogramsVis")
 
-shinytest2::test_app()
+# shinytest2::test_app()

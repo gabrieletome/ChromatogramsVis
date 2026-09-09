@@ -17,4 +17,5 @@ importFrom(DT,
 importFrom(Spectra,rbindlistWithRownames)
 importFrom(colourpicker,colourInput)
 importFrom(ggplot2,ggsave)
+importFrom(stats,na.omit)
 importFrom(utils,packageVersion)

@@ -19,6 +19,8 @@ library(htmltools)
 #' - Main content area with chromatogram visualization panels
 #' - Conditional panels that display based on the selected import method
 #'
+#' @importFrom stats na.omit
+#'
 #' @author Gabriele Tomè
 #'
 #' @keywords internal

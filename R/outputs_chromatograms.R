@@ -87,5 +87,32 @@ base_chromatograms <- function(input, output, session, object_reactive, i,
                     filename = file)
         }, contentType = "image/png"
     )
+
+    output[[ns("downloadChromatograms_RDS")]] <- downloadHandler(
+        filename = paste0("chromatograms_obj_",i(),".rds"),
+        content = function(file) {
+            obj <- object_reactive()
+            xrange <- round(unlist(rtime(obj)), 2)
+            yrange <- round(unlist(intensity(obj)), 2)
+
+            if (input[[ns("chr_xlim")]][1] != min(xrange, na.rm = TRUE) |
+                input[[ns("chr_xlim")]][2] != max(xrange, na.rm = TRUE)) {
+                obj <- filterPeaksData(obj, variables = "rtime",
+                                        ranges = c(min(xrange, na.rm = TRUE),
+                                                   max(xrange, na.rm = TRUE)))
+
+            }
+
+            if (input[[ns("chr_ylim")]][1] != min(yrange, na.rm = TRUE) |
+                input[[ns("chr_ylim")]][2] != max(yrange, na.rm = TRUE)) {
+                obj <- filterPeaksData(obj, variables = "intensity",
+                                        ranges = c(min(yrange, na.rm = TRUE),
+                                                   max(yrange, na.rm = TRUE)))
+            }
+
+            obj <- setBackend(obj[i()], ChromBackendMemory())
+            saveRDS(obj, file = file)
+        }
+    )
 }
 # nocov end
