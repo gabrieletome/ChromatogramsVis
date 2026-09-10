@@ -30,6 +30,8 @@
 #'
 #' @import Chromatograms
 #'
+#' @importFrom MsExperiment MsExperiment spectra
+#'
 #' @import htmltools
 #'
 #' @author Gabriele Tomè
@@ -37,7 +39,7 @@
 #' @export
 browseChromatograms <- function(object = NULL, isGalaxyIE = FALSE) {
     if(!is.null(object)){
-        stopifnot(inherits(object, "Chromatograms"))
+        stopifnot(inherits(object, c("Chromatograms", "MsExperiment")))
         if (!length(object))
             stop("The 'Chromatograms' object is empty.")
     }

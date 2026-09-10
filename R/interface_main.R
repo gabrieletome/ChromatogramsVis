@@ -34,12 +34,18 @@ ui <- function(isGalaxyIE){
         sidebar = dashboardSidebar(
             radioButtons("input_cat", "Select import method: ",
                         choices = c(
-                                na.omit(ifelse(isGalaxyIE, NA, "From R")),
-                                "Raw data", "R object",
-                                na.omit(ifelse(isGalaxyIE, "Galaxy History", NA))),
+                            na.omit(ifelse(isGalaxyIE, NA, "From R")),
+                            "Raw data", "R object",
+                            na.omit(ifelse(isGalaxyIE, "Galaxy History", NA))),
                         selected = "From R"),
+            checkboxInput("load_in_memory", span("Load in all in memory",
+                            title = paste0("This load all data in memory ",
+                                "changing the backend to ChromBackendMemory. ",
+                                "Slower load but much faster interaction.")),
+                            value = FALSE),
             conditionalPanel('input.input_cat == "From R"', {
                 actionButton("load_r_obj", "Load R console object")
+
             }),
             conditionalPanel('input.input_cat == "Raw data"', {
                 fluidRow(

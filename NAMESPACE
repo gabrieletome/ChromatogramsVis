@@ -14,6 +14,10 @@ importFrom(DT,
   DTOutput,
   renderDT
 )
+importFrom(MsExperiment,
+  MsExperiment,
+  spectra
+)
 importFrom(Spectra,rbindlistWithRownames)
 importFrom(colourpicker,colourInput)
 importFrom(ggplot2,ggsave)

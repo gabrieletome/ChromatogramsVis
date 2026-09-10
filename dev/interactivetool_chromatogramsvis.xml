@@ -23,8 +23,8 @@
   <icon src="ChromatogramsVis.png"/>
   <description>Visualization tool for Chromatograms Object</description>
   <macros>
-    <token name="@TOOL_VERSION@">0.1.5</token>
-    <token name="@CONTAINER_VERSION@">0.1.5</token>
+    <token name="@TOOL_VERSION@">0.1.6</token>
+    <token name="@CONTAINER_VERSION@">0.1.1</token>
     <token name="@VERSION_SUFFIX@">0</token>
   </macros>
 
@@ -38,7 +38,7 @@
   </edam_operations>
 
   <requirements>
-    <container type="docker">chromatogramsvis:@CONTAINER_VERSION@</container>
+    <container type="docker">chromatogramsvis:@CONTAINER_VERSION@_@TOOL_VERSION@</container>
   </requirements>
 
   <entry_points>

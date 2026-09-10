@@ -1,5 +1,9 @@
 # ChromatogramsVis 0.1
 
+## Changes in 0.1.6
+
+- Ass support to MsExperiment as input
+
 ## Changes in 0.1.5
 
 - Add tests based on `shinytest2`

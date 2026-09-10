@@ -27,8 +27,17 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
             ))
         } else {
             print(object)
-            object_reactive(object)
+            stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
+            if (inherits(object, "MsExperiment")) {
+                object <- Chromatograms(spectra(object))
+            }
+            if (!length(object))
+                stop("The 'Chromatograms' object is empty.")
 
+            if (input$load_in_memory)
+                object <- setBackend(object, ChromBackendMemory())
+
+            object_reactive(object)
             output$chromatogramsPlot <- renderUI({
                 chrGui("chromatogramsPlot", object_reactive())
             })
@@ -52,7 +61,10 @@ load_raw_file <- function(input, output, session, object_reactive) {
         } else {
             f <- input$raw_file$datapath
 
-            be <- backendInitialize(ChromBackendMzR(), files = f)
+            if (input$load_in_memory)
+                be <- backendInitialize(ChromBackendMemory(), files = f)
+            else
+                be <- backendInitialize(ChromBackendMzR(), files = f)
 
             object_reactive(Chromatograms(be))
             print(object_reactive())
@@ -76,6 +88,16 @@ load_rds_file <- function(input, output, session, object_reactive) {
         } else {
             f <- input$rds_file$datapath
             object <- readRDS(f)
+
+            stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
+            if (inherits(object, "MsExperiment")) {
+                object <- Chromatograms(spectra(object))
+            }
+            if (!length(object))
+                stop("The 'Chromatograms' object is empty.")
+
+            if (input$load_in_memory)
+                object <- setBackend(object, ChromBackendMemory())
 
             object_reactive(object)
             print(object_reactive())
@@ -113,6 +135,17 @@ load_galaxy <- function(input, output, session, object_reactive) {
                 "Please provide a valid input."
             ))
         }
+
+        stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
+        if (inherits(object, "MsExperiment")) {
+            object <- Chromatograms(spectra(object))
+        }
+        if (!length(object))
+            stop("The 'Chromatograms' object is empty.")
+
+
+        if (input$load_in_memory)
+            object <- setBackend(object, ChromBackendMemory())
 
         object_reactive(object)
         print(object_reactive())
