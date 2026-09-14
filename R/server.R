@@ -28,7 +28,7 @@
 #'
 #' @import htmltools
 #'
-#' @importFrom Spectra rbindlistWithRownames
+#' @importFrom Spectra rbindlistWithRownames MsBackendMemory
 #'
 #' @author Gabriele Tomè
 #'

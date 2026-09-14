@@ -29,7 +29,10 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
             print(object)
             stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
             if (inherits(object, "MsExperiment")) {
-                object <- Chromatograms(spectra(object))
+                s <- spectra(object)
+                object <- backendInitialize(new("ChromBackendSpectra"), s,
+                            summarize.method = input$console_summarize_method)
+                object <- Chromatograms(object)
             }
             if (!length(object))
                 stop("The 'Chromatograms' object is empty.")
@@ -90,8 +93,12 @@ load_rds_file <- function(input, output, session, object_reactive) {
             object <- readRDS(f)
 
             stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
-            if (inherits(object, "MsExperiment")) {
-                object <- Chromatograms(spectra(object))
+            if (input$object_class == "MsExperiment" &
+                    inherits(object, "MsExperiment")) {
+                s <- spectra(object)
+                object <- backendInitialize(new("ChromBackendSpectra"), s,
+                                    summarize.method = input$summarize_method)
+                object <- Chromatograms(object)
             }
             if (!length(object))
                 stop("The 'Chromatograms' object is empty.")

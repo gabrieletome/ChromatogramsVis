@@ -18,7 +18,10 @@ importFrom(MsExperiment,
   MsExperiment,
   spectra
 )
-importFrom(Spectra,rbindlistWithRownames)
+importFrom(Spectra,
+  MsBackendMemory,
+  rbindlistWithRownames
+)
 importFrom(colourpicker,colourInput)
 importFrom(ggplot2,ggsave)
 importFrom(stats,na.omit)

@@ -44,8 +44,20 @@ ui <- function(isGalaxyIE){
                                 "Slower load but much faster interaction.")),
                             value = FALSE),
             conditionalPanel('input.input_cat == "From R"', {
-                actionButton("load_r_obj", "Load R console object")
-
+                fluidRow(
+                    radioButtons("console_object_class", "Class of the object:",
+                            choices = c("Chromatograms", "MsExperiment"),
+                            selected = "Chromatograms"),
+                    conditionalPanel(
+                        'input.console_object_class == "MsExperiment"', {
+                        radioButtons("console_summarize_method",
+                        "Select method: ",
+                        choices = list("Total Ion Chromatogram (TIC)" = "sum",
+                                    "Base Peak Chromatogram (BPC)" = "max"),
+                        selected = "sum")
+                    }),
+                    actionButton("load_r_obj", "Load R console object")
+                )
             }),
             conditionalPanel('input.input_cat == "Raw data"', {
                 fluidRow(
@@ -56,6 +68,15 @@ ui <- function(isGalaxyIE){
             }),
             conditionalPanel('input.input_cat == "R object"', {
                 fluidRow(
+                    radioButtons("object_class", "Class of the object:",
+                            choices = c("Chromatograms", "MsExperiment"),
+                            selected = "Chromatograms"),
+                    conditionalPanel('input.object_class == "MsExperiment"', {
+                        radioButtons("summarize_method", "Select method: ",
+                        choices = list("Total Ion Chromatogram (TIC)" = "sum",
+                                    "Base Peak Chromatogram (BPC)" = "max"),
+                        selected = "sum")
+                    }),
                     fileInput("rds_file",
                             "Upload the RDS file with the Chromatograms object",
                             accept = ".RDS"),
