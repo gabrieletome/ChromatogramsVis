@@ -15,7 +15,7 @@ WORKDIR /tmp/ChromatogramsVis/
 RUN R -e 'install.packages(c("pak", "devtools", "BiocManager"))'
 RUN R -e 'pak::local_install_deps()'
 ## Install manually otherwise it is missing.
-RUN R -e 'pak::pak("mzR")'
+RUN R -e 'pak::pak(c("mzR", "MsExperiment", "Spectra", "MsBackendMetaboLights"))'
 ## After update of Chromatograms package, remove the following line.
 RUN R -e 'pak::pak("Rformassspectrometry/Chromatograms@gabri")'
 

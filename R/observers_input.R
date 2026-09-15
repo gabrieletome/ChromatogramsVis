@@ -132,6 +132,9 @@ load_galaxy <- function(input, output, session, object_reactive) {
         if (config$input_mode$mode == "rds") {
             filePath <- config$input_mode$rds_file
             object <- readRDS(filePath)
+        } else if (config$input_mode$mode == "rds_ms") {
+            filePath <- config$input_mode$rds_ms_file
+            object <- readRDS(filePath)
         } else if (config$input_mode$mode == "raw") {
             filePath <- config$input_mode$raw_file
             be <- backendInitialize(ChromBackendMzR(), files = filePath)
@@ -145,7 +148,10 @@ load_galaxy <- function(input, output, session, object_reactive) {
 
         stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
         if (inherits(object, "MsExperiment")) {
-            object <- Chromatograms(spectra(object))
+            s <- spectra(object)
+            object <- backendInitialize(new("ChromBackendSpectra"), s,
+                        summarize.method = config$input_mode$summarize_method)
+            object <- Chromatograms(object)
         }
         if (!length(object))
             stop("The 'Chromatograms' object is empty.")

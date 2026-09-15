@@ -24,7 +24,7 @@
   <description>Visualization tool for Chromatograms Object</description>
   <macros>
     <token name="@TOOL_VERSION@">0.1.6</token>
-    <token name="@CONTAINER_VERSION@">0.1.1</token>
+    <token name="@CONTAINER_VERSION@">0.1.2</token>
     <token name="@VERSION_SUFFIX@">0</token>
   </macros>
 
@@ -92,14 +92,25 @@
       <param name="mode" type="select" label="Input Mode">
         <option value="raw">mzML file</option>
         <option value="rds">RDS with Chromatograms object</option>
+        <option value="rds_ms">RDS with MsExperiment object</option>
       </param>
       <when value="raw">
         <param name="raw_file" type="data" label="mzML file"
-               help="..." />
+               help="Select a .mzML file" />
       </when>
       <when value="rds">
         <param name="rds_file" type="data" label="RDS file"
-               help="..." />
+               help="Select a .RDS file with inside a single
+                      Chromatograms object" />
+      </when>
+      <when value="rds_ms">
+        <param name="rds_ms_file" type="data" label="RDS file"
+               help="Select a .RDS file with inside a single
+                      MsExperiment object" />
+        <param name="summarize_method" type="select" label="Select method: ">
+          <option value="sum">Total Ion Chromatogram (TIC)</option>
+          <option value="max">Base Peak Chromatogram (BPC)</option>
+        </param>
       </when>
     </conditional>
   </inputs>
@@ -127,7 +138,18 @@ Inputs Required
 
 ChromatogramsVis requires the following input file for a new visualization:
 
-1. **mzML file**
+1. **mzML file**: the file is read with Chromatograms to generate the
+    corresponding object. ChromatogramsVis is a visualization tool, where only
+    `rtime` and `intensity` can be filtered, for additional analysis we suggest
+    to work on a R session and save the resulting object in RDS format.
+
+2. **RDS file with Chromatograms object**: a RDS file generated using
+    `saveRDS()` with inside a single Chromatograms object.
+
+3. **RDS file with MsExperiment object**: a RDS file generated using
+    `saveRDS()` with inside a single MsExperiment object. The summarization
+    method can be "Total Ion Chromatogram (TIC)" (default) or "Base Peak
+    Chromatogram (BPC)".
 
 Output
 ------
