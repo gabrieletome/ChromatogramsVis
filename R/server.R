@@ -22,6 +22,8 @@
 #'
 #' @importFrom DT renderDT DTOutput
 #'
+#' @importFrom methods new
+#'
 #' @import ggplot2
 #'
 #' @import Chromatograms
@@ -51,9 +53,13 @@ server <- function(object){
         slider(input, output, session, object_reactive, i)
         nxt(input, output, session, object_reactive, i)
         prv(input, output, session, object_reactive, i)
+        zoom_chromatograms(input, output, session)
+        dblclick_chromatograms(input, output, session, object_reactive)
 
         ## Chromatograms Overlay plot observers
         base_chromatogramsOverlay(input, output, session, object_reactive)
+        zoom_chromatogramsOverlay(input, output, session)
+        dblclick_chromatogramsOverlay(input, output, session, object_reactive)
 
     }
 }

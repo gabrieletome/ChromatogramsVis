@@ -62,13 +62,17 @@ chrGui <- function (id, object){
             hr(),
             plotOutput(ns("plotChromatograms"),
                         hover = hoverOpts(
-                        id = ns("plotChromatograms_hover"),
-                        delay = 50,
-                        delayType = "debounce",
-                        clip = FALSE,
-                        nullOutside = FALSE
-                    )),
-            uiOutput(ns("plotChromatograms_hover_info")),
+                            id = ns("plotChromatograms_hover"),
+                            delay = 20,
+                            delayType = "debounce",
+                            clip = FALSE,
+                            nullOutside = FALSE),
+                        brush = brushOpts(
+                            id = ns("plotChromatograms_brush"),
+                            clip = TRUE,
+                            resetOnNew = TRUE),
+                        dblclick = ns("plotChromatograms_dblclick")),
+            uiOutput(ns("plotChromatograms_hover_info"))
         ),
         column(
             width = 4,

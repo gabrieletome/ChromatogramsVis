@@ -95,3 +95,62 @@ prv <- function(input, output, session, object_reactive, i,
     })
 }
 # nocov end
+
+
+## Zoom the plot with brush
+# nocov start
+zoom_chromatograms <- function(input, output, session,
+                            id = "chromatogramsPlot") {
+    ns <- NS(id)
+
+    observeEvent(input[[ns("plotChromatograms_brush")]], {
+        updateSliderInput(session, ns("chr_xlim"),
+                        value = c(input[[ns("plotChromatograms_brush")]]$xmin,
+                                input[[ns("plotChromatograms_brush")]]$xmax))
+        updateSliderInput(session, ns("chr_ylim"),
+                        value = c(input[[ns("plotChromatograms_brush")]]$ymin,
+                                input[[ns("plotChromatograms_brush")]]$ymax))
+    })
+
+}
+# nocov end
+
+# nocov start
+dblclick_chromatograms <- function(input, output, session, object_reactive,
+                                    id = "chromatogramsPlot") {
+    ns <- NS(id)
+
+    observeEvent(input[[ns("plotChromatograms_dblclick")]], {
+        xrange <- round(unlist(rtime(object_reactive())), 2)
+        yrange <- round(unlist(intensity(object_reactive())), 2)
+
+        if (input[[ns("chr_xlim")]][1] == min(xrange, na.rm = T) &
+                input[[ns("chr_xlim")]][2] == max(xrange, na.rm = T) &
+                input[[ns("chr_ylim")]][1] == min(yrange, na.rm = T) &
+                input[[ns("chr_ylim")]][2] == max(yrange, na.rm = T)) {
+            xadd <- (max(xrange, na.rm = T) - min(xrange, na.rm = T)) / 4
+            yadd <- (max(yrange, na.rm = T) - min(yrange, na.rm = T)) / 4
+
+            xclick <- input[[ns("plotChromatograms_dblclick")]]$x
+            yclick <- input[[ns("plotChromatograms_dblclick")]]$y
+
+            xlim <- c(max(min(xrange, na.rm = T), xclick - xadd),
+                      min(max(xrange, na.rm = T), xclick + xadd))
+            ylim <- c(max(min(yrange, na.rm = T), yclick - yadd),
+                      min(max(yrange, na.rm = T), yclick + yadd))
+
+            updateSliderInput(session, ns("chr_xlim"), value = xlim)
+            updateSliderInput(session, ns("chr_ylim"), value = ylim)
+        } else {
+            updateSliderInput(session, ns("chr_xlim"),
+                        value = c(min(xrange, na.rm = T),
+                                  max(xrange, na.rm = T)))
+            updateSliderInput(session, ns("chr_ylim"),
+                        value = c(min(yrange, na.rm = T),
+                                  max(yrange, na.rm = T)))
+
+        }
+    })
+
+}
+# nocov end

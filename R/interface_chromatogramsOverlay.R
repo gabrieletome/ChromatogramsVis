@@ -51,8 +51,12 @@ chrOverlayGui <- function (id, object){
                         hover = hoverOpts(
                                     id = ns("plotChromatograms_overlay_hover"),
                                     delay = 50, delayType = "debounce",
-                                    clip = FALSE, nullOutside = FALSE
-                    )),
+                                    clip = FALSE, nullOutside = FALSE),
+                        brush = brushOpts(
+                            id = ns("plotChromatograms_overlay_brush"),
+                            clip = TRUE,
+                            resetOnNew = TRUE),
+                        dblclick = ns("plotChromatograms_overlay_dblclick")),
             uiOutput(ns("plotChromatograms_overlay_hover_info"))
         ),
         column(

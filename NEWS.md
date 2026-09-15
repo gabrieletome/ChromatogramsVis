@@ -1,8 +1,13 @@
 # ChromatogramsVis 0.1
 
+## Changes in 0.1.7
+
+- Complete support of MsExperiment in Galaxy
+- Add double click and zoom
+
 ## Changes in 0.1.6
 
-- Ass support to MsExperiment as input
+- Add support to MsExperiment as input
 
 ## Changes in 0.1.5
 
