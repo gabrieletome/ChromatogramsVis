@@ -1,0 +1,109 @@
+## Load required libraries for Shiny Server
+library(shiny)
+library(shinydashboard)
+library(colourpicker)
+library(htmltools)
+
+#' ChromatogramsVis Dashboard UI
+#'
+#' Creates the user interface for the ChromatogramsVis Shiny application.
+#' Provides options to load chromatogram data from various sources (R console,
+#' raw files, RDS objects, or Galaxy history) and visualize them in different
+#' plot formats.
+#'
+#' @return A Shiny dashboard page object containing the UI structure
+#'
+#' @details
+#' The UI includes:
+#' - A sidebar with import method selection with conditional panels that
+#'   display based on the selected import method and navigation tabs
+#' - Main content area with chromatogram visualization panels
+#'
+#' @importFrom stats na.omit
+#'
+#' @author Gabriele Tomè
+#'
+#' @keywords internal
+ui <- function(isGalaxyIE){
+    dashboardPage(
+        skin = "black",
+        title = "ChromatogramsVis",
+        header = dashboardHeader(
+            title="ChromatogramsVis"
+        ),
+        sidebar = dashboardSidebar(
+            radioButtons("input_cat", "Select import method: ",
+                        choices = c(
+                            na.omit(ifelse(isGalaxyIE, NA, "From R")),
+                            "Raw data", "R object",
+                            na.omit(ifelse(isGalaxyIE, "Galaxy History", NA))),
+                        selected = "From R"),
+            checkboxInput("load_in_memory", span("Load in all in memory",
+                            title = paste0("This load all data in memory ",
+                                "changing the backend to ChromBackendMemory. ",
+                                "Slower load but much faster interaction.")),
+                            value = FALSE),
+            conditionalPanel('input.input_cat == "From R"', {
+                fluidRow(
+                    radioButtons("console_object_class", "Class of the object:",
+                            choices = c("Chromatograms", "MsExperiment"),
+                            selected = "Chromatograms"),
+                    conditionalPanel(
+                        'input.console_object_class == "MsExperiment"', {
+                        radioButtons("console_summarize_method",
+                        "Select method: ",
+                        choices = list("Total Ion Chromatogram (TIC)" = "sum",
+                                    "Base Peak Chromatogram (BPC)" = "max"),
+                        selected = "sum")
+                    }),
+                    actionButton("load_r_obj", "Load R console object")
+                )
+            }),
+            conditionalPanel('input.input_cat == "Raw data"', {
+                fluidRow(
+                    fileInput("raw_file", "Upload the raw file",
+                                accept = ".mzml"),
+                    actionButton("load_raw_file", "Load file")
+                )
+            }),
+            conditionalPanel('input.input_cat == "R object"', {
+                fluidRow(
+                    radioButtons("object_class", "Class of the object:",
+                            choices = c("Chromatograms", "MsExperiment"),
+                            selected = "Chromatograms"),
+                    conditionalPanel('input.object_class == "MsExperiment"', {
+                        radioButtons("summarize_method", "Select method: ",
+                        choices = list("Total Ion Chromatogram (TIC)" = "sum",
+                                    "Base Peak Chromatogram (BPC)" = "max"),
+                        selected = "sum")
+                    }),
+                    fileInput("rds_file",
+                            "Upload the RDS file with the Chromatograms object",
+                            accept = ".RDS"),
+                    actionButton("load_rds_file", "Load object")
+                )
+            }),
+            conditionalPanel('input.input_cat == "Galaxy History"', {
+                actionButton("load_galaxy", "Load Galaxy history")
+            }),
+            hr(),
+            sidebarMenu(
+                id="tabs",
+                menuItem("Chromatograms", tabName = "chr", selected = TRUE),
+                menuItem("Chromatograms Overlay", tabName = "chr_overlay")
+            )
+        ),
+        body = dashboardBody(
+            tabItems(
+                tabItem(
+                    tabName = "chr",
+                    uiOutput("chromatogramsPlot")
+                ),
+                tabItem(
+                    tabName = "chr_overlay",
+                    uiOutput("chromatogramsOverlayPlot")
+                )
+            )
+        )
+    )
+}

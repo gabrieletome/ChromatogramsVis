@@ -16,7 +16,10 @@
 #' @importFrom Chromatograms peaksData mz
 #'
 #' @importFrom Spectra rbindlistWithRownames
-#' @noRd
+#'
+#' @author Gabriele Tomè
+#'
+#' @keywords internal
 get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
     if(is.null(i)){
         v_l <- peaksData(object)

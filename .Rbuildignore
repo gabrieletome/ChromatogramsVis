@@ -1,2 +1,7 @@
 .github
 pkgdown
+how_do.sh
+app.R
+global.R
+Dockerfile
+dev/

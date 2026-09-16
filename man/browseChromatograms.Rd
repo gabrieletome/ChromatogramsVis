@@ -4,10 +4,16 @@
 \alias{browseChromatograms}
 \title{Browse Chromatograms in a Chromatograms object}
 \usage{
-browseChromatograms(object = NULL)
+browseChromatograms(object = NULL, isGalaxyIE = FALSE)
 }
 \arguments{
 \item{object}{A non-empty instance of class \code{Chromatograms}.}
+
+\item{isGalaxyIE}{A logical value indicating whether the Shiny app is running
+inside a Galaxy Interactive Environment (IE). If \code{TRUE}, the app will
+adjust its behavior to accommodate the Galaxy environment. If \code{FALSE},
+the app will run in a standard Shiny environment. The default value is
+\code{FALSE}.}
 }
 \value{
 An object that represents the app.
