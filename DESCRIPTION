@@ -1,9 +1,8 @@
 Package: ChromatogramsVis
 Title: Visualising and Exploring Chromatograms Data
 Version: 0.1.7
-Description: This package defines a set of helper function to
-    visualise and explore mass spectrometry data stored as Chromatograms
-    objects.
+Description: This package defines a Shiny app to visualise and explore mass
+    spectrometry data stored as Chromatograms objects.
 Authors@R:
     c(person(given = "Gabriele", family = "Tomè",
              email = "gabriele.tome@eurac.edu",

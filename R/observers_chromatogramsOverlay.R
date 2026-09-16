@@ -56,7 +56,7 @@ zoom_chromatogramsOverlay <- function(input, output, session,
 }
 # nocov end
 
-#' @rdname chromatogramsServer
+#' @rdname chromatogramsOverlayServer
 #'
 #' @description
 #' Zoom/unzoom based on double click

@@ -15,6 +15,14 @@ zoom_chromatogramsOverlay(
   id = "chromatogramsOverlayPlot"
 )
 
+dblclick_chromatogramsOverlay(
+  input,
+  output,
+  session,
+  object_reactive,
+  id = "chromatogramsOverlayPlot"
+)
+
 base_chromatogramsOverlay(
   input,
   output,
@@ -39,6 +47,8 @@ Server-side observers for the chromatograms overlay plot display.
 Handles reactive updates to the plot and data table when user inputs change.
 
 Zoom the plot with brush
+
+Zoom/unzoom based on double click
 
 The function contains all the shiny functions that update the \code{output} shiny
 variable of the Chromatograms Overlay plot. It is included alse the function

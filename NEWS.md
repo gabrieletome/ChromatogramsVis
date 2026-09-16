@@ -4,6 +4,7 @@
 
 - Complete support of MsExperiment in Galaxy
 - Add double click and zoom
+- Update documentation
 
 ## Changes in 0.1.6
 

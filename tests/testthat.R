@@ -32,4 +32,3 @@ chr_mzr <- Chromatograms(be)
 
 test_check("ChromatogramsVis")
 
-# shinytest2::test_app()
