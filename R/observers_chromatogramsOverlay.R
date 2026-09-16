@@ -1,25 +1,44 @@
-#' Server Logic for Chromatograms Plot
+#' Server Logic for Chromatograms Overlay Plot
 #'
-#' @name chromatogramsServer
+#' @name chromatogramsOverlayServer
+#'
+#' @rdname chromatogramsOverlayServer
+#'
+#' @aliases base_chromatogramsOverlay
+#' @aliases zoom_chromatogramsOverlay
+#' @aliases dblclick_chromatogramsOverlay
 #'
 #' @description
 #'
-#' Server-side observers for the chromatograms plot display.
+#' Server-side observers for the chromatograms overlay plot display.
 #' Handles reactive updates to the plot and data table when user inputs change.
 #'
 #' @details
 #' This module contains multiple `observeEvent` handlers that update the plot
-#' and data table when the user modifies:
-#' - Slider position for spectrum browsing
-#' - Navigation buttons (previous/next spectrum)
-#' - X/Y axis ranges
-#' - Plot colors and symbols
-#' - Line width and font size
+#' and data table when the user:
+#' - Zoom or double click on the plot
+#'
+#' @param input Shiny input object
+#'
+#' @param output Shiny output object
+#'
+#' @param session Shiny session object
+#'
+#' @param object_reactive Shiny reactive object with inside Chromatograms object
+#'
+#' @param id `character(1)` with the ID of the namespace of the input.
 #'
 #' @author Gabriele Tomè
 #'
 #' @keywords internal
-## Zoom the plot with brush
+NULL
+
+#' @rdname chromatogramsOverlayServer
+#'
+#' @description
+#' Zoom the plot with brush
+#'
+#' @keywords internal
 # nocov start
 zoom_chromatogramsOverlay <- function(input, output, session,
                             id = "chromatogramsOverlayPlot") {
@@ -37,6 +56,12 @@ zoom_chromatogramsOverlay <- function(input, output, session,
 }
 # nocov end
 
+#' @rdname chromatogramsServer
+#'
+#' @description
+#' Zoom/unzoom based on double click
+#'
+#' @keywords internal
 # nocov start
 dblclick_chromatogramsOverlay <- function(input, output, session,
                                     object_reactive,

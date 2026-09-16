@@ -2,6 +2,15 @@
 #'
 #' @name chromatogramsServer
 #'
+#' @rdname chromatogramsServer
+#'
+#' @aliases base_chromatograms
+#' @aliases slider
+#' @aliases nxt
+#' @aliases prv
+#' @aliases zoom_chromatograms
+#' @aliases dblclick_chromatograms
+#'
 #' @description
 #'
 #' Server-side observers for the chromatograms plot display.
@@ -12,11 +21,30 @@
 #' and data table when the user modifies:
 #' - Slider position for spectrum browsing
 #' - Navigation buttons (previous/next spectrum)
-#' - X/Y axis ranges
-#' - Plot colors and symbols
-#' - Line width and font size
+#' - Zoom and double click on the plot
+#'
+#' @param input Shiny input object
+#'
+#' @param output Shiny output object
+#'
+#' @param session Shiny session object
+#'
+#' @param object_reactive Shiny reactive object with inside Chromatograms object
+#'
+#' @param i Shiny reactive object with the index of the spectra currently
+#'     visualized
+#'
+#' @param id `character(1)` with the ID of the namespace of the input.
 #'
 #' @author Gabriele Tomè
+#'
+#' @keywords internal
+NULL
+
+#' @rdname chromatogramsServer
+#'
+#' @description
+#' Update the figure based on the slider value.
 #'
 #' @keywords internal
 # nocov start
@@ -43,7 +71,12 @@ slider <- function(input, output, session, object_reactive, i,
 }
 # nocov end
 
-## update the plot with the next spectrum
+#' @rdname chromatogramsServer
+#'
+#' @description
+#' Update the plot with the next spectrum.
+#'
+#' @keywords internal
 # nocov start
 nxt <- function(input, output, session, object_reactive, i,
                     id = "chromatogramsPlot") {
@@ -70,7 +103,12 @@ nxt <- function(input, output, session, object_reactive, i,
 }
 # nocov end
 
-## update the plot with the previous spectrum
+#' @rdname chromatogramsServer
+#'
+#' @description
+#' Update the plot with the previous spectrum.
+#'
+#' @keywords internal
 # nocov start
 prv <- function(input, output, session, object_reactive, i,
                     id = "chromatogramsPlot") {
@@ -96,8 +134,12 @@ prv <- function(input, output, session, object_reactive, i,
 }
 # nocov end
 
-
-## Zoom the plot with brush
+#' @rdname chromatogramsServer
+#'
+#' @description
+#' Zoom the plot with brush
+#'
+#' @keywords internal
 # nocov start
 zoom_chromatograms <- function(input, output, session,
                             id = "chromatogramsPlot") {
@@ -115,6 +157,12 @@ zoom_chromatograms <- function(input, output, session,
 }
 # nocov end
 
+#' @rdname chromatogramsServer
+#'
+#' @description
+#' Zoom/unzoom based on double click
+#'
+#' @keywords internal
 # nocov start
 dblclick_chromatograms <- function(input, output, session, object_reactive,
                                     id = "chromatogramsPlot") {

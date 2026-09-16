@@ -1,4 +1,11 @@
-## Chromatograms Overlay ----
+#' @rdname chromatogramsOverlayServer
+#'
+#' @description
+#' The function contains all the shiny functions that update the `output` shiny
+#' variable of the Chromatograms Overlay plot. It is included alse the function
+#' to download the plot and the filtered RDS file.
+#'
+#' @keywords internal
 # nocov start
 base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                                         id = "chromatogramsOverlayPlot") {

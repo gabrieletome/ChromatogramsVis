@@ -15,9 +15,9 @@ library(htmltools)
 #'
 #' @details
 #' The UI includes:
-#' - A sidebar with import method selection and navigation tabs
+#' - A sidebar with import method selection with conditional panels that
+#'   display based on the selected import method and navigation tabs
 #' - Main content area with chromatogram visualization panels
-#' - Conditional panels that display based on the selected import method
 #'
 #' @importFrom stats na.omit
 #'

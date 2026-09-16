@@ -18,9 +18,9 @@ plot formats.
 \details{
 The UI includes:
 \itemize{
-\item A sidebar with import method selection and navigation tabs
+\item A sidebar with import method selection with conditional panels that
+display based on the selected import method and navigation tabs
 \item Main content area with chromatogram visualization panels
-\item Conditional panels that display based on the selected import method
 }
 }
 \author{

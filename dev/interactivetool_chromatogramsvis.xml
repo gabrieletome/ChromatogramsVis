@@ -5,7 +5,6 @@
        <xref type="bioconductor">Chromatograms</xref>
    </xrefs>
    <creator>
-     <!-- This currently gives a blank person icon without names nor orcid in Galaxy UI-->
      <person>
        <name>Gabriele Tomè</name>
        <familyName>Tomè</familyName>
@@ -144,30 +143,36 @@ ChromatogramsVis requires the following input file for a new visualization:
     to work on a R session and save the resulting object in RDS format.
 
 2. **RDS file with Chromatograms object**: a RDS file generated using
-    `saveRDS()` with inside a single Chromatograms object.
+    `saveRDS()` with inside a single Chromatograms object. IMPORTANTE: save the
+    object with `ChromBackendMemory()`
 
 3. **RDS file with MsExperiment object**: a RDS file generated using
     `saveRDS()` with inside a single MsExperiment object. The summarization
     method can be "Total Ion Chromatogram (TIC)" (default) or "Base Peak
     Chromatogram (BPC)".
 
-Output
-------
-
-- ...
-
 Usage Tips
 ----------
 
-- ...
+- If **RDS file** use as input pay attention to have the data loaded inside the
+  object (`Chromatograms` object uses `ChromBackendMemory()`)
 
 Further Resources
 -----------------
 
-- ...
+- `ChromatogramsVis GitHub Repository <https://github.com/--/ChromatogramsVis>`_
+- `Chromatograms package <https://rformassspectrometry.github.io/Chromatograms/>`_
+
   ]]></help>
   <citations>
     <citation type="bibtex">
+    @Manual{,
+      title = {Chromatograms: Infrastructure for Chromatographic Mass Spectrometry Data},
+      author = {Johannes Rainer and Laurent Gatto and Philippine Louail},
+      year = {2026},
+      note = {R package version 1.3.3},
+      url = {https://github.com/RforMassSpectrometry/Chromatograms},
+    }
     </citation>
   </citations>
 </tool>

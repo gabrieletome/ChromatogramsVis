@@ -1,4 +1,49 @@
-## Clean if radioButton change
+#' Server Logic for input methods
+#'
+#' @name inputServer
+#' @rdname inputServer
+#'
+#' @aliases input_cat
+#' @aliases load_r_obj
+#' @aliases load_raw_file
+#' @aliases load_rds_file
+#' @aliases load_galaxy
+#'
+#' @description
+#'
+#' Handle the serve side of the input methods. Load data from various sources
+#' (R console, raw files, RDS objects, or Galaxy history), build a
+#' Chromatograms object and generate the GUI for the visualization.
+#'
+#' @details
+#' Based on the input:
+#' - Load the data
+#' - If not a `Chromatograms` object, build it
+#' - If `"In memory"` option is selected it change the backend to
+#'   `ChromBackendMemory`
+#' - Activete the GUIs
+#'
+#' @param input Shiny input object
+#'
+#' @param output Shiny output object
+#'
+#' @param session Shiny session object
+#'
+#' @param object `Chromatograms` or `MsExperiment` object passed via R console
+#'
+#' @param object_reactive Shiny reactive object with inside Chromatograms object
+#'
+#' @author Gabriele Tomè
+#'
+#' @keywords internal
+NULL
+
+#' @rdname inputServer
+#'
+#' @description
+#' Clean the GUI if the input radioButton change
+#'
+#' @keywords internal
 # nocov start
 input_cat <- function(input, output, session, object_reactive) {
     observeEvent(input$input_cat, {
@@ -17,6 +62,15 @@ input_cat <- function(input, output, session, object_reactive) {
 # nocov end
 
 ## Load from R parameter
+#' @rdname inputServer
+#'
+#' @description
+#' Check if the object is a `Chromatograms` or `MsExperiment`. If it is a
+#' `MsExperiment` convert to `Chromatograms` based on the summarized method
+#' selected. If `"In memory"` option is selected it change the backend to
+#' `ChromBackendMemory`. Activate the GUIs.
+#'
+#' @keywords internal
 # nocov start
 load_r_obj <- function(input, output, session, object, object_reactive) {
     observeEvent(input$load_r_obj, {
@@ -53,6 +107,13 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
 # nocov end
 
 ## Load raw file
+#' @rdname inputServer
+#'
+#' @description
+#' If `"In memory"` option is selected read the file as `ChromBackendMemory`,
+#' otherwise as `ChromBackendMzR`. Activate the GUIs.
+#'
+#' @keywords internal
 # nocov start
 load_raw_file <- function(input, output, session, object_reactive) {
     observeEvent(input$load_raw_file, {
@@ -80,6 +141,15 @@ load_raw_file <- function(input, output, session, object_reactive) {
 # nocov end
 
 ## Load RDS file
+#' @rdname inputServer
+#'
+#' @description
+#' Check if the object inside the `"RDS file"` is a `Chromatograms` or
+#' `MsExperiment`. If it is a `MsExperiment` convert to `Chromatograms` based
+#' on the summarized method selected. If `"In memory"` option is selected it
+#' change the backend to `ChromBackendMemory`. Activate the GUIs.
+#'
+#' @keywords internal
 # nocov start
 load_rds_file <- function(input, output, session, object_reactive) {
     observeEvent(input$load_rds_file, {
@@ -121,6 +191,16 @@ load_rds_file <- function(input, output, session, object_reactive) {
 # nocov end
 
 ## Load Galaxy history
+#' @rdname inputServer
+#'
+#' @description
+#' Read the Galaxy history and based on the input file read it. Check if the
+#' object is a `Chromatograms` or `MsExperiment`. If it is a `MsExperiment`
+#' convert to `Chromatograms` based on the summarized method selected. If
+#' `"In memory"` option is selected it change the backend to
+#' `ChromBackendMemory`. Activate the GUIs.
+#'
+#' @keywords internal
 # nocov start
 load_galaxy <- function(input, output, session, object_reactive) {
     observeEvent(input$load_galaxy, {

@@ -1,5 +1,11 @@
-## ChromatogramsPlot ----
-## start by displaying the first spectrum
+#' @rdname chromatogramsServer
+#'
+#' @description
+#' The function contains all the shiny functions that update the `output` shiny
+#' variable of the Chromatograms plot. It is included alse the function to
+#' download the plot and the filtered RDS file.
+#'
+#' @keywords internal
 # nocov start
 base_chromatograms <- function(input, output, session, object_reactive, i,
                                 id = "chromatogramsPlot") {
