@@ -105,19 +105,24 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
             if (input[[ns("chrOverlay_xlim")]][1] != min(xrange, na.rm = TRUE) |
                input[[ns("chrOverlay_xlim")]][2] != max(xrange, na.rm = TRUE)) {
                 obj <- filterPeaksData(obj, variables = "rtime",
-                                        ranges = c(min(xrange, na.rm = TRUE),
-                                                   max(xrange, na.rm = TRUE)))
+                    ranges = c(min(input[[ns("chrOverlay_xlim")]][1],
+                                    na.rm = TRUE),
+                                max(input[[ns("chrOverlay_xlim")]][2],
+                                    na.rm = TRUE)))
 
             }
 
             if (input[[ns("chrOverlay_ylim")]][1] != min(yrange, na.rm = TRUE) |
                input[[ns("chrOverlay_ylim")]][2] != max(yrange, na.rm = TRUE)) {
                 obj <- filterPeaksData(obj, variables = "intensity",
-                                        ranges = c(min(yrange, na.rm = TRUE),
-                                                   max(yrange, na.rm = TRUE)))
+                        ranges = c(min(input[[ns("chrOverlay_ylim")]][1],
+                                        na.rm = TRUE),
+                                    max(input[[ns("chrOverlay_ylim")]][2],
+                                        na.rm = TRUE)))
             }
 
             obj <- setBackend(obj, ChromBackendMemory())
+            obj <- filterEmptyChromatograms(obj)
             saveRDS(obj, file = file)
         }
     )
