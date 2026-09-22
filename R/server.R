@@ -38,9 +38,10 @@
 # nocov start
 server <- function(object){
     function(input, output, session) {
+        options(shiny.maxRequestSize = 300 * 1024 ^ 2, warn = -1,
+                shiny.sanitize.errors = TRUE)
         i <- reactiveVal(1)
         object_reactive <- reactiveVal()
-
         ## Input data observers
         input_cat(input, output, session, object_reactive)
         load_r_obj(input, output, session, object, object_reactive)
