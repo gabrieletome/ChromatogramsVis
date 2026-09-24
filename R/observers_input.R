@@ -48,6 +48,7 @@ NULL
 input_cat <- function(input, output, session, object_reactive) {
     observeEvent(input$input_cat, {
         print(paste("input_cat:", input$input_cat))
+        output$sidebarMenu <- renderUI(NULL)
         output$chromatogramsPlot <- renderUI(NULL)
         output$chromatogramsOverlayPlot <- renderUI(NULL)
         ## clean single variables
@@ -80,7 +81,6 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
                 "Something went wrong! Missing R object parameter"
             ))
         } else {
-            print(object)
             stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
             if (inherits(object, "MsExperiment")) {
                 s <- spectra(object)
@@ -100,6 +100,13 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
             })
             output$chromatogramsOverlayPlot <- renderUI({
                 chrOverlayGui("chromatogramsOverlayPlot", object_reactive())
+            })
+            output$sidebarMenu <- renderUI({
+                sidebarMenu(
+                    id="tabs",
+                    menuItem("Chromatograms", tabName = "chr", selected = TRUE),
+                    menuItem("Chromatograms Overlay", tabName = "chr_overlay")
+                )
             })
         }
     })
@@ -135,6 +142,13 @@ load_raw_file <- function(input, output, session, object_reactive) {
             output$chromatogramsPlot <- renderUI(chrGui("chromatogramsPlot", object_reactive()))
             output$chromatogramsOverlayPlot <-
                     renderUI(chrOverlayGui("chromatogramsOverlayPlot", object_reactive()))
+            output$sidebarMenu <- renderUI({
+                sidebarMenu(
+                    id="tabs",
+                    menuItem("Chromatograms", tabName = "chr", selected = TRUE),
+                    menuItem("Chromatograms Overlay", tabName = "chr_overlay")
+                )
+            })
         }
     })
 }
@@ -184,6 +198,13 @@ load_rds_file <- function(input, output, session, object_reactive) {
             output$chromatogramsOverlayPlot <- renderUI({
                 chrOverlayGui("chromatogramsOverlayPlot",
                             object_reactive())
+            })
+            output$sidebarMenu <- renderUI({
+                sidebarMenu(
+                    id="tabs",
+                    menuItem("Chromatograms", tabName = "chr", selected = TRUE),
+                    menuItem("Chromatograms Overlay", tabName = "chr_overlay")
+                )
             })
         }
     })
@@ -245,6 +266,13 @@ load_galaxy <- function(input, output, session, object_reactive) {
         output$chromatogramsPlot <- renderUI(chrGui("chromatogramsPlot", object_reactive()))
         output$chromatogramsOverlayPlot <-
                 renderUI(chrOverlayGui("chromatogramsOverlayPlot", object_reactive()))
+        output$sidebarMenu <- renderUI({
+            sidebarMenu(
+                id="tabs",
+                menuItem("Chromatograms", tabName = "chr", selected = TRUE),
+                menuItem("Chromatograms Overlay", tabName = "chr_overlay")
+            )
+        })
 
         ## Not here, but for completeness:
         ## Here is where the output would go:

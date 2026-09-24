@@ -87,11 +87,7 @@ ui <- function(isGalaxyIE){
                 actionButton("load_galaxy", "Load Galaxy history")
             }),
             hr(),
-            sidebarMenu(
-                id="tabs",
-                menuItem("Chromatograms", tabName = "chr", selected = TRUE),
-                menuItem("Chromatograms Overlay", tabName = "chr_overlay")
-            )
+            uiOutput("sidebarMenu")
         ),
         body = dashboardBody(
             tabItems(
