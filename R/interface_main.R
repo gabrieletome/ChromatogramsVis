@@ -62,7 +62,7 @@ ui <- function(isGalaxyIE){
             conditionalPanel('input.input_cat == "Raw data"', {
                 fluidRow(
                     fileInput("raw_file", "Upload the raw file",
-                                accept = ".mzml"),
+                                accept = ".mzml", multiple = TRUE),
                     actionButton("load_raw_file", "Load file")
                 )
             }),

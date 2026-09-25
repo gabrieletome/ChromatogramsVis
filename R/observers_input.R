@@ -45,7 +45,8 @@ NULL
 #'
 #' @keywords internal
 # nocov start
-input_cat <- function(input, output, session, object_reactive) {
+input_cat <- function(input, output, session,
+                        object_reactive, object_reactive_msexp) {
     observeEvent(input$input_cat, {
         print(paste("input_cat:", input$input_cat))
         output$sidebarMenu <- renderUI(NULL)
@@ -58,6 +59,7 @@ input_cat <- function(input, output, session, object_reactive) {
         output$dfChromatograms_overlay <- renderUI(NULL)
         ## clean reactive variable
         object_reactive(NULL)
+        object_reactive_msexp(NULL)
     })
 }
 # nocov end
@@ -73,7 +75,8 @@ input_cat <- function(input, output, session, object_reactive) {
 #'
 #' @keywords internal
 # nocov start
-load_r_obj <- function(input, output, session, object, object_reactive) {
+load_r_obj <- function(input, output, session, object,
+                        object_reactive, object_reactive_msexp) {
     observeEvent(input$load_r_obj, {
         if (is.null(object)) {
             showModal(modalDialog(
@@ -83,6 +86,9 @@ load_r_obj <- function(input, output, session, object, object_reactive) {
         } else {
             stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
             if (inherits(object, "MsExperiment")) {
+                ## Save original MsExperiment for later filters
+                object_reactive_msexp(object)
+
                 s <- spectra(object)
                 object <- backendInitialize(new("ChromBackendSpectra"), s,
                             summarize.method = input$console_summarize_method)
@@ -165,7 +171,8 @@ load_raw_file <- function(input, output, session, object_reactive) {
 #'
 #' @keywords internal
 # nocov start
-load_rds_file <- function(input, output, session, object_reactive) {
+load_rds_file <- function(input, output, session,
+                        object_reactive, object_reactive_msexp) {
     observeEvent(input$load_rds_file, {
         if (is.null(input$rds_file)) {
             showModal(modalDialog(
@@ -179,6 +186,11 @@ load_rds_file <- function(input, output, session, object_reactive) {
             stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
             if (input$object_class == "MsExperiment" &
                     inherits(object, "MsExperiment")) {
+                ## Save original MsExperiment for later filters
+                print(object_reactive_msexp)
+                object_reactive_msexp(object)
+                print(object_reactive_msexp)
+
                 s <- spectra(object)
                 object <- backendInitialize(new("ChromBackendSpectra"), s,
                                     summarize.method = input$summarize_method)
@@ -223,7 +235,8 @@ load_rds_file <- function(input, output, session, object_reactive) {
 #'
 #' @keywords internal
 # nocov start
-load_galaxy <- function(input, output, session, object_reactive) {
+load_galaxy <- function(input, output, session,
+                        object_reactive, object_reactive_msexp) {
     observeEvent(input$load_galaxy, {
         setwd(paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),"../working",sep="/"))
         print(getwd())
@@ -249,6 +262,9 @@ load_galaxy <- function(input, output, session, object_reactive) {
 
         stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
         if (inherits(object, "MsExperiment")) {
+            ## Save original MsExperiment for later filters
+            object_reactive_msexp(object)
+
             s <- spectra(object)
             object <- backendInitialize(new("ChromBackendSpectra"), s,
                         summarize.method = config$input_mode$summarize_method)

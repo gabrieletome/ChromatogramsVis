@@ -3,6 +3,7 @@
 ## Changes in 0.1.8
 
 - Update visibility sidebar menu
+- Export filtered MsExperiment
 - Fix bug export filtered object
 - Increase limit input file from 5Mb to 300Mb
 

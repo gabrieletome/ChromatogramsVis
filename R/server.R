@@ -42,15 +42,22 @@ server <- function(object){
                 shiny.sanitize.errors = TRUE)
         i <- reactiveVal(1)
         object_reactive <- reactiveVal()
+        object_reactive_msexp <- reactiveVal()
+
         ## Input data observers
-        input_cat(input, output, session, object_reactive)
-        load_r_obj(input, output, session, object, object_reactive)
+        input_cat(input, output, session,
+                    object_reactive, object_reactive_msexp)
+        load_r_obj(input, output, session, object,
+                    object_reactive, object_reactive_msexp)
         load_raw_file(input, output, session, object_reactive)
-        load_rds_file(input, output, session, object_reactive)
-        load_galaxy(input, output, session, object_reactive)
+        load_rds_file(input, output, session,
+                    object_reactive, object_reactive_msexp)
+        load_galaxy(input, output, session,
+                    object_reactive, object_reactive_msexp)
 
         ## Chromatograms plot observers
-        base_chromatograms(input, output, session, object_reactive, i)
+        base_chromatograms(input, output, session, object_reactive,
+                            object_reactive_msexp, i)
         slider(input, output, session, object_reactive, i)
         nxt(input, output, session, object_reactive, i)
         prv(input, output, session, object_reactive, i)
@@ -58,7 +65,8 @@ server <- function(object){
         dblclick_chromatograms(input, output, session, object_reactive)
 
         ## Chromatograms Overlay plot observers
-        base_chromatogramsOverlay(input, output, session, object_reactive)
+        base_chromatogramsOverlay(input, output, session, object_reactive,
+                                    object_reactive_msexp)
         zoom_chromatogramsOverlay(input, output, session)
         dblclick_chromatogramsOverlay(input, output, session, object_reactive)
 

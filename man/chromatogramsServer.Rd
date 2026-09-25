@@ -32,6 +32,7 @@ base_chromatograms(
   output,
   session,
   object_reactive,
+  object_reactive_msexp,
   i,
   id = "chromatogramsPlot"
 )

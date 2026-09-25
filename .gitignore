@@ -1,3 +1,4 @@
 how_do.sh
-inst/mzml/EH10329.mzml
+inst/mzml
 inst/rds/MTBLS8735_MsExperiment.rds
+inst/rds/MTBLS8735*
