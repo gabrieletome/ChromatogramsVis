@@ -9,15 +9,22 @@
 \alias{load_galaxy}
 \title{Server Logic for input methods}
 \usage{
-input_cat(input, output, session, object_reactive)
+input_cat(input, output, session, object_reactive, object_reactive_msexp)
 
-load_r_obj(input, output, session, object, object_reactive)
+load_r_obj(
+  input,
+  output,
+  session,
+  object,
+  object_reactive,
+  object_reactive_msexp
+)
 
 load_raw_file(input, output, session, object_reactive)
 
-load_rds_file(input, output, session, object_reactive)
+load_rds_file(input, output, session, object_reactive, object_reactive_msexp)
 
-load_galaxy(input, output, session, object_reactive)
+load_galaxy(input, output, session, object_reactive, object_reactive_msexp)
 }
 \arguments{
 \item{input}{Shiny input object}

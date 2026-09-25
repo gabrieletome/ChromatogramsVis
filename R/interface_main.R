@@ -62,7 +62,7 @@ ui <- function(isGalaxyIE){
             conditionalPanel('input.input_cat == "Raw data"', {
                 fluidRow(
                     fileInput("raw_file", "Upload the raw file",
-                                accept = ".mzml"),
+                                accept = ".mzml", multiple = TRUE),
                     actionButton("load_raw_file", "Load file")
                 )
             }),
@@ -87,11 +87,7 @@ ui <- function(isGalaxyIE){
                 actionButton("load_galaxy", "Load Galaxy history")
             }),
             hr(),
-            sidebarMenu(
-                id="tabs",
-                menuItem("Chromatograms", tabName = "chr", selected = TRUE),
-                menuItem("Chromatograms Overlay", tabName = "chr_overlay")
-            )
+            uiOutput("sidebarMenu")
         ),
         body = dashboardBody(
             tabItems(

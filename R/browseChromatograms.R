@@ -30,7 +30,7 @@
 #'
 #' @import Chromatograms
 #'
-#' @importFrom MsExperiment MsExperiment spectra 
+#' @importFrom MsExperiment MsExperiment spectra
 #'
 #' @import htmltools
 #'
