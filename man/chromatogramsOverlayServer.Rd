@@ -28,6 +28,7 @@ base_chromatogramsOverlay(
   output,
   session,
   object_reactive,
+  object_reactive_msexp,
   id = "chromatogramsOverlayPlot"
 )
 }
