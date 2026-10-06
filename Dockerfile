@@ -20,6 +20,7 @@ RUN R -e 'pak::pak(c("Rformassspectrometry/MsExperimentStash", "Rformassspectrom
 # RUN R -e 'pak::local_install_deps()'
 # ## Install manually otherwise it is missing.
 RUN R -e 'pak::pak(c("mzR", "MsExperiment", "Spectra", "MsBackendMetaboLights"))'
+RUN R -e 'pak::pak(c("shinydashboard", "shinybusy", "colourpicker", "DT"))'
 # ## After update of Chromatograms package, remove the following line.
 RUN R -e 'pak::pak("Rformassspectrometry/Chromatograms@gabri")'
 
