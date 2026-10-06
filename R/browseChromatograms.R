@@ -32,16 +32,22 @@
 #'
 #' @importFrom MsExperiment MsExperiment spectra
 #'
+#' @importFrom MsStash readMsObject AlabasterParam
+#'
 #' @import htmltools
 #'
 #' @author Gabriele Tomè
 #'
 #' @export
-browseChromatograms <- function(object = NULL, isGalaxyIE = FALSE) {
+browseChromatograms <- function(object = NULL, msStashPath = NULL,
+                                isGalaxyIE = FALSE) {
     if(!is.null(object)){
         stopifnot(inherits(object, c("Chromatograms", "MsExperiment")))
         if (!length(object))
             stop("The 'Chromatograms' object is empty.")
+    } else if (!is.null(msStashPath)){
+        ap <- AlabasterParam(msStashPath)
+        object <- readMsObject(MsExperiment(), ap)
     }
 
     shinyApp(ui(isGalaxyIE), server(object))

@@ -2,3 +2,6 @@ how_do.sh
 inst/mzml
 inst/rds/MTBLS8735_MsExperiment.rds
 inst/rds/MTBLS8735*
+inst/rds/MetabonautData
+inst/rds/MetabonautData.zip
+inst/rds/Metabonaut*

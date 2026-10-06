@@ -22,7 +22,7 @@
   <icon src="ChromatogramsVis.png"/>
   <description>Visualization tool for Chromatograms Object</description>
   <macros>
-    <token name="@TOOL_VERSION@">0.1.8</token>
+    <token name="@TOOL_VERSION@">0.1.9</token>
     <token name="@CONTAINER_VERSION@">0.1.2</token>
     <token name="@VERSION_SUFFIX@">0</token>
   </macros>
@@ -92,6 +92,7 @@
         <option value="raw">mzML file</option>
         <option value="rds">RDS with Chromatograms object</option>
         <option value="rds_ms">RDS with MsExperiment object</option>
+        <option value="msstash">Alabaster MsExperimentStash</option>
       </param>
       <when value="raw">
         <param name="raw_file" type="data" label="mzML file"
@@ -106,6 +107,15 @@
         <param name="rds_ms_file" type="data" label="RDS file"
                help="Select a .RDS file with inside a single
                       MsExperiment object" />
+        <param name="summarize_method" type="select" label="Select method: ">
+          <option value="sum">Total Ion Chromatogram (TIC)</option>
+          <option value="max">Base Peak Chromatogram (BPC)</option>
+        </param>
+      </when>
+      <when value="msstash">
+        <param name="msstash_file" type="data" label="ZIP file or folder"
+               help="Select a .ZIP file or the directory with inside the
+                      MsExperimentStash" />
         <param name="summarize_method" type="select" label="Select method: ">
           <option value="sum">Total Ion Chromatogram (TIC)</option>
           <option value="max">Base Peak Chromatogram (BPC)</option>
@@ -150,6 +160,10 @@ ChromatogramsVis requires the following input file for a new visualization:
     `saveRDS()` with inside a single MsExperiment object. The summarization
     method can be "Total Ion Chromatogram (TIC)" (default) or "Base Peak
     Chromatogram (BPC)".
+
+4. **Alabaster MsExperimentStash**: a ZIP file or a folder with inside the
+    MsExperimentStash. The summarization method can be "Total Ion Chromatogram
+    (TIC)" (default) or "Base Peak Chromatogram (BPC)".
 
 Usage Tips
 ----------

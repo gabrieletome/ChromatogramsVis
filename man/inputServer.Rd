@@ -7,6 +7,7 @@
 \alias{load_raw_file}
 \alias{load_rds_file}
 \alias{load_galaxy}
+\alias{load_msstash_file}
 \title{Server Logic for input methods}
 \usage{
 input_cat(input, output, session, object_reactive, object_reactive_msexp)
@@ -23,6 +24,14 @@ load_r_obj(
 load_raw_file(input, output, session, object_reactive)
 
 load_rds_file(input, output, session, object_reactive, object_reactive_msexp)
+
+load_msstash_file(
+  input,
+  output,
+  session,
+  object_reactive,
+  object_reactive_msexp
+)
 
 load_galaxy(input, output, session, object_reactive, object_reactive_msexp)
 }
@@ -54,6 +63,11 @@ otherwise as \code{ChromBackendMzR}. Activate the GUIs.
 
 Check if the object inside the \code{"RDS file"} is a \code{Chromatograms} or
 \code{MsExperiment}. If it is a \code{MsExperiment} convert to \code{Chromatograms} based
+on the summarized method selected. If \code{"In memory"} option is selected it
+change the backend to \code{ChromBackendMemory}. Activate the GUIs.
+
+Unzip the archive to retrive the MsStash folder and read it in a
+MsExperiment object. Convert the object to \code{Chromatograms} based
 on the summarized method selected. If \code{"In memory"} option is selected it
 change the backend to \code{ChromBackendMemory}. Activate the GUIs.
 

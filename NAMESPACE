@@ -2,6 +2,7 @@
 
 export(browseChromatograms)
 import(Chromatograms)
+import(MsExperimentStash)
 import(ggplot2)
 import(htmltools)
 import(shiny)
@@ -18,6 +19,10 @@ importFrom(MsExperiment,
   MsExperiment,
   spectra
 )
+importFrom(MsStash,
+  AlabasterParam,
+  readMsObject
+)
 importFrom(Spectra,
   MsBackendMemory,
   rbindlistWithRownames
@@ -25,5 +30,9 @@ importFrom(Spectra,
 importFrom(colourpicker,colourInput)
 importFrom(ggplot2,ggsave)
 importFrom(methods,new)
+importFrom(shinybusy,
+  remove_modal_spinner,
+  show_modal_spinner
+)
 importFrom(stats,na.omit)
 importFrom(utils,packageVersion)

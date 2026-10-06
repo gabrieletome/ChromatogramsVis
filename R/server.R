@@ -20,6 +20,8 @@
 #'
 #' @import shinydashboard
 #'
+#' @importFrom shinybusy remove_modal_spinner show_modal_spinner
+#'
 #' @importFrom DT renderDT DTOutput
 #'
 #' @importFrom methods new
@@ -32,13 +34,19 @@
 #'
 #' @importFrom Spectra rbindlistWithRownames MsBackendMemory
 #'
+#' @importFrom MsExperiment MsExperiment
+#'
+#' @importFrom MsStash readMsObject AlabasterParam
+#'
+#' @import MsExperimentStash
+#'
 #' @author Gabriele Tomè
 #'
 #' @keywords internal
 # nocov start
 server <- function(object){
     function(input, output, session) {
-        options(shiny.maxRequestSize = 300 * 1024 ^ 2, warn = -1,
+        options(shiny.maxRequestSize = 1024 * 1024 ^ 2, warn = -1,
                 shiny.sanitize.errors = TRUE)
         i <- reactiveVal(1)
         object_reactive <- reactiveVal()
@@ -51,6 +59,8 @@ server <- function(object){
                     object_reactive, object_reactive_msexp)
         load_raw_file(input, output, session, object_reactive)
         load_rds_file(input, output, session,
+                    object_reactive, object_reactive_msexp)
+        load_msstash_file(input, output, session,
                     object_reactive, object_reactive_msexp)
         load_galaxy(input, output, session,
                     object_reactive, object_reactive_msexp)
