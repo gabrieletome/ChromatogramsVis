@@ -35,9 +35,12 @@ Suggests:
     mzR,
     MsDataHub,
     testthat,
-    shinytest2
+    shinytest2,
+    knitr,
+    BiocStyle
 License: Artistic-2.0
 Encoding: UTF-8
+VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/RforMassSpectrometry/ChromatogramsVis/issues
 URL: https://rformassspectrometry.github.io/ChromatogramsVis
