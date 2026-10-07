@@ -6,21 +6,18 @@ output:
     BiocStyle::html_document:
         toc_float: true
 vignette: >
-    %\VignetteIndexEntry{Retrieve and Use Mass Spectrometry Data from MassIVE}
+    %\VignetteIndexEntry{Running ChromatogramsVis inside Galaxy}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{ChromatogramsVis}
     %\VignetteDepends{BiocStyle,knitr}
 ---
 
-```{r setup, include = FALSE}
+```{r setup, echo = FALSE, results = 'asis', message=FALSE, include = FALSE}
+BiocStyle::markdown()
 knitr::opts_chunk$set(
   eval = FALSE   # all commands below are meant to be run in a terminal, not by knitr
 )
-```
-
-```{r style, echo = FALSE, results = 'asis', message=FALSE}
-BiocStyle::markdown()
 ```
 
 # Introduction
