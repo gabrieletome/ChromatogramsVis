@@ -15,15 +15,16 @@ ADD DESCRIPTION /tmp/ChromatogramsVis/DESCRIPTION
 WORKDIR /tmp/ChromatogramsVis/
 RUN R -e 'install.packages(c("pak", "tinytex", "xfun"))'
 RUN R -e 'pak::pak(c("devtools", "BiocManager"))'
-## Remove when the packages will be in BiocConductor.
-RUN R -e 'pak::pak(c("Rformassspectrometry/MsExperimentStash", "Rformassspectrometry/MsStash"))'
-# RUN R -e 'pak::local_install_deps()'
 # ## Install manually otherwise it is missing.
-RUN R -e 'pak::pak(c("mzR", "MsExperiment", "Spectra", "MsBackendMetaboLights"))'
+## Remove when the packages will be in BiocConductor.
+RUN R -e 'pak::pak(c("Rformassspectrometry/Spectra", "Rformassspectrometry/MsExperimentStash", "Rformassspectrometry/MsStash", "Rformassspectrometry/SpectraStash"))'
+
+RUN R -e 'pak::pak(c("mzR", "MsExperiment", "MsBackendMetaboLights", "alabaster.base", "alabaster.matrix"))'
 RUN R -e 'pak::pak(c("shinydashboard", "shinybusy", "colourpicker", "DT"))'
 # ## After update of Chromatograms package, remove the following line.
 RUN R -e 'pak::pak("Rformassspectrometry/Chromatograms@gabri")'
 
+RUN R -e 'pak::local_install_deps()'
 ADD . /tmp/ChromatogramsVis
 RUN R CMD INSTALL /tmp/ChromatogramsVis
 

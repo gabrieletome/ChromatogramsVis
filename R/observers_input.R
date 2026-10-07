@@ -316,9 +316,7 @@ load_galaxy <- function(input, output, session,
         show_modal_spinner(spin = "half-circle",
                         text = "Loading object. This may take a while...")
         setwd(paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),"../working",sep="/"))
-        print(getwd())
         config <- jsonlite::fromJSON("chromatogramsvis-gxit-inputs.json")
-        print(config)
 
         if (config$input_mode$mode == "rds") {
             filePath <- config$input_mode$rds_file
@@ -327,16 +325,18 @@ load_galaxy <- function(input, output, session,
             filePath <- config$input_mode$rds_ms_file
             object <- readRDS(filePath)
         } else if (config$input_mode$mode == "msstash") {
-            filePath <- config$input_mode$rds_ms_file
-            if(!dir.exists(filePath)){
-                list_files <- unzip(filePath,
-                                    exdir = file.path(tempdir(), "MsStash",
-                                                    basename(filePath)))
-                dir <- dirname(list_files)[which.min(do.call(nchar,
-                                                    list(dirname(list_files))))]
+            filePath <- config$input_mode$msstash_file
+            if(!dir.exists(gsub(".dat$", "_files", filePath))){
+                out_dir <- file.path(tempdir(), "MsStash", basename(filePath))
+                dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+                list_files <- unzip(filePath, exdir = out_dir)
             } else {
-                dir <- filePath
+                dir <- gsub(".dat$", "_files", filePath)
+                list_files <- list.files(dir, recursive = TRUE,
+                                        pattern = "OBJECT", full.names = TRUE)
             }
+            dir <- dirname(list_files)[which.min(do.call(nchar,
+                                                    list(dirname(list_files))))]
             ap <- AlabasterParam(dir)
             object <- readMsObject(MsExperiment(), ap)
         } else if (config$input_mode$mode == "raw") {
