@@ -91,10 +91,12 @@ load_r_obj <- function(input, output, session, object,
                 ## Save original MsExperiment for later filters
                 object_reactive_msexp(object)
 
-                s <- spectra(object)
-                object <- backendInitialize(new("ChromBackendSpectra"), s,
+                # s <- spectra(object)
+                # object <- backendInitialize(new("ChromBackendSpectra"), s,
+                #             summarize.method = input$console_summarize_method)
+                # object <- Chromatograms(object)
+                object <- Chromatograms(spectra(object),
                             summarize.method = input$console_summarize_method)
-                object <- Chromatograms(object)
             }
             if (!length(object))
                 stop("The 'Chromatograms' object is empty.")
@@ -199,10 +201,12 @@ load_rds_file <- function(input, output, session,
                 object_reactive_msexp(object)
                 print(object_reactive_msexp)
 
-                s <- spectra(object)
-                object <- backendInitialize(new("ChromBackendSpectra"), s,
-                                    summarize.method = input$summarize_method)
-                object <- Chromatograms(object)
+                # s <- spectra(object)
+                # object <- backendInitialize(new("ChromBackendSpectra"), s,
+                #                     summarize.method = input$summarize_method)
+                # object <- Chromatograms(object)
+                object <- Chromatograms(spectra(object),
+                            summarize.method = input$summarize_method)
             }
             if (!length(object))
                 stop("The 'Chromatograms' object is empty.")
@@ -257,18 +261,19 @@ load_msstash_file <- function(input, output, session,
             shiny:::flushReact()
             f <- input$msstash_file$datapath
             cat(f)
-            list_files <- unzip(f, exdir = file.path(tempdir(), "MsStash",
-                                                basename(f)))
+            list_files <- unzip(f, exdir = tempfile())
             dir <- dirname(list_files)[which.min(do.call(nchar,
                                                     list(dirname(list_files))))]
             cat(dir)
             ap <- AlabasterParam(dir)
             print(ap)
             object <- readMsObject(MsExperiment(), ap)
-            object <- spectra(object)
-            object <- backendInitialize(new("ChromBackendSpectra"), object,
+            # object <- spectra(object)
+            # object <- backendInitialize(new("ChromBackendSpectra"), object,
+            #                 summarize.method = input$summarize_method_stash)
+            # object <- Chromatograms(object)
+            object <- Chromatograms(spectra(object),
                             summarize.method = input$summarize_method_stash)
-            object <- Chromatograms(object)
 
             if (!length(object))
                 stop("The 'Chromatograms' object is empty.")
@@ -327,7 +332,7 @@ load_galaxy <- function(input, output, session,
         } else if (config$input_mode$mode == "msstash") {
             filePath <- config$input_mode$msstash_file
             if(!dir.exists(gsub(".dat$", "_files", filePath))){
-                out_dir <- file.path(tempdir(), "MsStash", basename(filePath))
+                out_dir <- tempfile()
                 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
                 list_files <- unzip(filePath, exdir = out_dir)
             } else {
@@ -355,10 +360,12 @@ load_galaxy <- function(input, output, session,
             ## Save original MsExperiment for later filters
             object_reactive_msexp(object)
 
-            s <- spectra(object)
-            object <- backendInitialize(new("ChromBackendSpectra"), s,
-                        summarize.method = config$input_mode$summarize_method)
-            object <- Chromatograms(object)
+            # s <- spectra(object)
+            # object <- backendInitialize(new("ChromBackendSpectra"), s,
+            #             summarize.method = config$input_mode$summarize_method)
+            # object <- Chromatograms(object)
+            object <- Chromatograms(spectra(object),
+                            summarize.method = input$summarize_method)
         }
         if (!length(object))
             stop("The 'Chromatograms' object is empty.")

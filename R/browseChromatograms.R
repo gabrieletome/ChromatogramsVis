@@ -12,12 +12,6 @@
 #'
 #' @param msStashPath `character(1)` specifying the path to a MsStash object.
 #'
-#' @param isGalaxyIE A logical value indicating whether the Shiny app is running
-#'     inside a Galaxy Interactive Environment (IE). If `TRUE`, the app will
-#'     adjust its behavior to accommodate the Galaxy environment. If `FALSE`,
-#'     the app will run in a standard Shiny environment. The default value is
-#'     `FALSE`.
-#'
 #' @return An object that represents the app.
 #'
 #' @import shiny
@@ -41,8 +35,7 @@
 #' @author Gabriele Tomè
 #'
 #' @export
-browseChromatograms <- function(object = NULL, msStashPath = NULL,
-                                isGalaxyIE = FALSE) {
+browseChromatograms <- function(object = NULL, msStashPath = NULL) {
     if(!is.null(object)){
         stopifnot(inherits(object, c("Chromatograms", "MsExperiment")))
         if (!length(object))
@@ -52,6 +45,23 @@ browseChromatograms <- function(object = NULL, msStashPath = NULL,
         object <- readMsObject(MsExperiment(), ap)
     }
 
-    shinyApp(ui(isGalaxyIE), server(object))
+    shinyApp(ui(galaxy_instance()), server(object))
 }
 
+
+#' @title Check if the Shiny app is running inside a Galaxy Interactive
+#'     Environment (IE)
+#'
+#' @description
+#' The `galaxy_instance()` function checks whether the Shiny app is running
+#' inside a Galaxy Interactive Environment (IE) by examining the environment
+#' variable `_GALAXY_JOB_HOME_DIR`. If this variable is set, it indicates
+#' that the app is running within a Galaxy IE.
+#'
+#' @return `logical(1)` indicating whether the Shiny app is running inside
+#'     Galaxy
+#'
+#' @export
+galaxy_instance <- function() {
+    !is.na(Sys.getenv("_GALAXY_JOB_HOME_DIR", unset = NA))
+}
