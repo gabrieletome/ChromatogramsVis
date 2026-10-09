@@ -150,10 +150,11 @@ ChromatogramsVis requires the following input file for a new visualization:
 1. **mzML file**: the file is read with Chromatograms to generate the
     corresponding object. ChromatogramsVis is a visualization tool, where only
     `rtime` and `intensity` can be filtered, for additional analysis we suggest
-    to work on a R session and save the resulting object in RDS format.
+    to work on a R session and save the resulting object in RDS or MsStash
+    format.
 
 2. **RDS file with Chromatograms object**: a RDS file generated using
-    `saveRDS()` with inside a single Chromatograms object. IMPORTANTE: save the
+    `saveRDS()` with inside a single Chromatograms object. IMPORTANT: save the
     object with `ChromBackendMemory()`
 
 3. **RDS file with MsExperiment object**: a RDS file generated using

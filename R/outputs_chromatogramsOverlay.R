@@ -3,7 +3,7 @@
 #' @description
 #' The function contains all the shiny functions that update the `output` shiny
 #' variable of the Chromatograms Overlay plot. It is included alse the function
-#' to download the plot and the filtered RDS file.
+#' to download the plot and the filtered object.
 #'
 #' @keywords internal
 # nocov start
@@ -13,9 +13,11 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
     ns <- NS(id)
 
     output[[ns("plotChromatograms_overlay")]] <- renderPlot({
+        show_modal_spinner(spin = "half-circle",
+                        text = "Loading...")
         req(object_reactive())
 
-        ggplotChromatogramsOverlay(object_reactive(),
+        gg <- ggplotChromatogramsOverlay(object_reactive(),
                             xlim = input[[ns("chrOverlay_xlim")]],
                             ylim = input[[ns("chrOverlay_ylim")]],
                             col = input[[ns("chrOverlay_color")]],
@@ -25,6 +27,8 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                             bs = input[[ns("chrOverlay_bs")]],
                             axes = input[[ns("chrOverlay_showAxes")]],
                             frame.plot = input[[ns("chrOverlay_showBox")]])
+        remove_modal_spinner()
+        gg
     })
 
     output[[ns("dfChromatograms_overlay")]] <- renderDT({
@@ -97,12 +101,17 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
     )
 
     output[[ns("downloadChromatograms_overlay_RDS")]] <- downloadHandler(
-        filename = paste0("chromatograms_obj.rds"),
+        filename = ifelse(is.null(object_reactive_msexp()),
+                            "chromatograms_obj.rds",
+                            "msexperimentStash_obj.zip"),
         content = function(file) {
+            show_modal_spinner(spin = "half-circle",
+                            text = "Loading...")
             obj <- object_reactive()
             xrange <- round(unlist(rtime(obj)), 2)
             yrange <- round(unlist(intensity(obj)), 2)
-            if(is.null(object_reactive_msexp)){
+            if(is.null(object_reactive_msexp())){
+                message("Saving Chromatograms object")
                 ## Filter and save chromatograms object
                 if (input[[ns("chrOverlay_xlim")]][1] !=
                         min(xrange, na.rm = TRUE) |
@@ -128,8 +137,9 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
 
                 obj <- setBackend(obj, ChromBackendMemory())
                 obj <- filterEmptyChromatograms(obj)
-                saveRDS(obj, file = file)
+                f <- saveRDS(obj, file = file)
             } else {
+                message("Saving MsExperiment object")
                 ## Filter and save MsExperiment object
                 obj <- object_reactive_msexp()
                 if (input[[ns("chrOverlay_xlim")]][1] !=
@@ -155,9 +165,14 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                                             na.rm = TRUE)))
                 }
 
-                #TODO: save with MsExpetimentStash
-                saveRDS(obj, file = file)
+                ## Save with MsExperimentStash
+                saveObject(obj, path = gsub(".zip", "", file),
+                            consolidate = TRUE)
+                f <- zip(zipfile = file, files = gsub(".zip", "", file),
+                    flags = "-r")
             }
+            remove_modal_spinner()
+            f
         }
     )
 }

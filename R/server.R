@@ -2,8 +2,8 @@
 #'
 #' Server logic for the ChromatogramsVis Shiny application.
 #' Handles chromatogram data loading from multiple sources (R console, raw
-#' files, RDS objects, or Galaxy history) and manages interactive visualization
-#' rendering.
+#' files, RDS objects, MsStash or Galaxy history) and manages interactive
+#' visualization rendering.
 #'
 #' @param object Optional `chromatograms` object to initialize the app with
 #'     preloaded data.

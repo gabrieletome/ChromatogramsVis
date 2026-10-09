@@ -12,7 +12,7 @@
 #' @description
 #'
 #' Handle the serve side of the input methods. Load data from various sources
-#' (R console, raw files, RDS objects, or Galaxy history), build a
+#' (R console, raw files, RDS objects, MsStash, or Galaxy history), build a
 #' Chromatograms object and generate the GUI for the visualization.
 #'
 #' @details
@@ -60,6 +60,7 @@ input_cat <- function(input, output, session, object_reactive,
         ## clean reactive variable
         object_reactive(NULL)
         object_reactive_msexp(NULL)
+        remove_modal_spinner()
     })
 }
 # nocov end

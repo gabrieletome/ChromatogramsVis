@@ -48,7 +48,7 @@ load_galaxy(input, output, session, object_reactive, object_reactive_msexp)
 }
 \description{
 Handle the serve side of the input methods. Load data from various sources
-(R console, raw files, RDS objects, or Galaxy history), build a
+(R console, raw files, RDS objects, MsStash, or Galaxy history), build a
 Chromatograms object and generate the GUI for the visualization.
 
 Clean the GUI if the input radioButton change

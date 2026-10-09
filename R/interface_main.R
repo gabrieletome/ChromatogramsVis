@@ -9,8 +9,8 @@ library(htmltools)
 #'
 #' Creates the user interface for the ChromatogramsVis Shiny application.
 #' Provides options to load chromatogram data from various sources (R console,
-#' raw files, RDS objects, or Galaxy history) and visualize them in different
-#' plot formats.
+#' raw files, RDS objects, MsStash or Galaxy history) and visualize them in
+#' different plot formats.
 #'
 #' @return A Shiny dashboard page object containing the UI structure
 #'
