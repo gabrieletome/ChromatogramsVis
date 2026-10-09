@@ -1,0 +1,292 @@
+---
+title: "Running ChromatogramsVis inside Galaxy"
+author: "Gabriele Tomè, Johannes Rainer"
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document:
+        toc_float: true
+vignette: >
+    %\VignetteIndexEntry{Running ChromatogramsVis inside Galaxy}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    %\VignettePackage{ChromatogramsVis}
+    %\VignetteDepends{BiocStyle,knitr}
+---
+
+```{r setup, echo = FALSE, results = 'asis', message=FALSE, include = FALSE}
+BiocStyle::markdown()
+knitr::opts_chunk$set(
+  eval = FALSE   # all commands below are meant to be run in a terminal, not by knitr
+)
+```
+
+# Introduction
+
+`ChromatogramsVis` ships with a [Shiny](https://shiny.posit.co/) application for
+the interactive visualisation of
+[Chromatograms](https://bioconductor.org/packages/Chromatograms) object.
+Besides running the app locally from R, the package can also be executed inside
+**Galaxy Interactive Tool**.
+
+[Galaxy](https://galaxyproject.org/) is a web-based platform for reproducible
+data analysis. An *Interactive Tool* (IT) is a Galaxy tool that, instead of
+producing output files and finishing, starts a long-running web application
+(here, the Shiny app) inside a Docker container and exposes it to the user
+through the Galaxy interface.
+
+This vignette explains, step by step, how to:
+
+1. build the Docker image that contains the app;
+2. register the tool in a local Galaxy instance;
+3. start Galaxy and launch the app;
+4. troubleshoot the most common problems.
+
+It is intended for people who want to **test or develop** the tool on their own
+machine.
+
+# How the pieces fit together
+
+The package contains three elements that matter for Galaxy:
+
+| Element | Location (package root) | Purpose |
+|---|---|---|
+| `Dockerfile` | `Dockerfile` | Recipe that installs R, the package and its dependencies, and starts the Shiny app. |
+| Tool definition | `dev/interactivetool_chromatogramsvis.xml` | Galaxy XML file describing the tool: name, inputs, Docker image to use, port to expose. |
+| `DESCRIPTION` | `DESCRIPTION` | Contains the package `Version`. |
+
+The Docker image is tagged as
+
+```
+chromatogramsvis:<CONTAINER_VERSION>_<TOOL_VERSION>
+```
+
+where
+
+- `TOOL_VERSION` is the `ChromatogramsVis` version;
+- `CONTAINER_VERSION` is the value of the `@CONTAINER_VERSION@` token declared
+  in the tool XML file.
+
+The same tag must be referenced in the XML file (inside the `<container>`
+element), otherwise Galaxy will not find the image you built. The commands
+below compute the tag automatically, so the two always stay consistent as long
+as you rebuild the image whenever either version changes.
+
+# Requirements
+
+Before starting, make sure that your machine has:
+
+* **Docker**, installed and running, and your user allowed to run `docker`
+  without `sudo` (check with `docker run hello-world`).
+* **Python 3** (needed by Galaxy; `./run.sh` creates its own virtual
+  environment, so no manual Python setup is normally required).
+* The clone of `ChromatogramsVis` GitHub repository.
+
+
+# Step-by-step instructions
+
+## 1. Download the ChromatogramsVis source code (only first time)
+
+Clone the package repository from GitHub:
+```{bash}
+git clone https://github.com/gabrieletome/ChromatogramsVis.git
+```
+
+> **Note.** This step has to be done only once. If the `ChromatogramsVis`
+> directory already exists, skip it.
+
+## 2. Download the Galaxy source code (only first time)
+
+Galaxy is cloned *next to* the package directory. The clone is large and can
+take several time.
+
+```{bash}
+## Download Galaxy source code in "./galaxy"
+## (i.e. "../galaxy" when seen from ChromatogramsVis)
+git clone https://github.com/galaxyproject/galaxy.git
+```
+
+> **Note.** This step has to be done only once. If the `galaxy` directory
+> already exists, skip it.
+
+## 3. Directory layout
+
+At this point, the commands assume that `ChromatogramsVis` and `galaxy` are
+**sibling directories**:
+
+```
+workspace/
+├── ChromatogramsVis/
+└── galaxy/
+```
+
+All the commands are executed in a terminal. Start from the root of the
+`ChromatogramsVis` package:
+
+```{bash}
+cd /path/to/workspace/ChromatogramsVis
+```
+
+## 4. Build the Docker image
+
+Return to the package directory and build the image.
+What these lines do:
+
+- `TOOL_VERSION=...` reads the package version from `DESCRIPTION`.
+- `CONTAINER_VERSION=...` reads the container version from the
+  `@CONTAINER_VERSION@` token in the tool XML file.
+- `docker build ...` builds the image from the `Dockerfile` in the current
+  directory (`.`) and tags it `chromatogramsvis:<CONTAINER_VERSION>_<TOOL_VERSION>`.
+
+```{bash}
+cd ChromatogramsVis
+
+TOOL_VERSION=`grep Version DESCRIPTION | cut -d: -f 2 | tr -d " "`
+CONTAINER_VERSION=`grep '<token name="@CONTAINER_VERSION@">' dev/interactivetool_chromatogramsvis.xml | cut -d'>' -f2 | cut -d'<' -f1`
+
+docker build . -t chromatogramsvis:${CONTAINER_VERSION}_${TOOL_VERSION} -f Dockerfile
+```
+
+You can check the variables and the result with:
+
+```{bash}
+echo "${CONTAINER_VERSION}_${TOOL_VERSION}"
+docker images chromatogramsvis
+```
+
+The first build can take several minutes because R and all package
+dependencies must be installed. Subsequent builds are faster thanks to
+Docker's layer cache.
+
+> **Important.** Re-run this step every time you change the R code, the
+> `Dockerfile`, the package `Version` or the container version token.
+> Galaxy uses the image *as it is* in your local Docker; it does not rebuild it.
+
+## 5. Copy the tool definition into Galaxy
+
+Galaxy keeps its interactive tools in `tools/interactive/`. The file name
+(`interactivetool_chromatogramsvis.xml`) is used in the next step.
+
+```{bash}
+cp dev/interactivetool_chromatogramsvis.xml ../galaxy/tools/interactive/
+```
+
+## 6. Add the tool to the Galaxy tool panel
+
+Galaxy only shows the tools that are listed in its tool configuration file.
+Move to the Galaxy directory and edit `config/tool_conf.xml`:
+
+```{bash}
+cd ../galaxy
+sed -i -e 's/askomics/chromatogramsvis/' config/tool_conf.xml
+```
+
+Galaxy's default configuration already contains an *Interactive tools* section
+that lists a sample tool called `askomics`, i.e. a line similar to:
+
+```xml
+<tool file="interactive/interactivetool_askomics.xml" />
+```
+
+The `sed` command replaces the word `askomics` with `chromatogramsvis`, so the
+line becomes:
+
+```xml
+<tool file="interactive/interactivetool_chromatogramsvis.xml" />
+```
+
+which points to the file copied in the previous step.
+
+> Alternatively to overwriting the askomics IE, you can add an own entry for
+> `interactivetool_chromatogramsvis.xml`
+
+You can verify the change with:
+
+```{bash}
+grep -n chromatogramsvis config/tool_conf.xml
+```
+
+## 7. Start Galaxy
+
+The first start takes a long time: Galaxy creates a Python virtual environment,
+installs its dependencies, builds the web client and initialises its database.
+Following starts take under a minute.
+
+```{bash}
+./run.sh
+```
+
+When the log shows a message similar to
+`Starting server in PID ... serving on http://127.0.0.1:8080`, Galaxy is
+ready.
+
+Open <http://localhost:8080> in your web browser.
+
+# Using the tool in Galaxy
+
+1. Open <http://localhost:8080>.
+2. Register a new account (**User > Register**) or log in. The first user is
+   not automatically an administrator; this is not needed to run the tool.
+3. If the tool requires input data, upload it using the **Upload** button
+   (top of the left panel) and wait until the dataset turns green.
+4. In the left tool panel, find the **Interactive tools** section and click on
+   **ChromatogramsVis**.
+5. Select the inputs/parameters, if any, and click **Run Tool**.
+6. Galaxy creates a job and starts a Docker container from the image you
+   built. Wait until the job is running.
+7. Open **User > Active Interactive Tools**. When the *ChromatogramsVis*
+   entry shows a link in the **Name** column, click it: the Shiny application
+   opens in a new browser tab.
+8. When you have finished, return to **Active Interactive Tools**, tick the
+   tool and click **Stop**, or delete the job from the history. Galaxy then
+   stops and removes the container, freeing CPU and memory.
+
+# Updating the tool after changing the code
+
+Docker images are not rebuilt automatically. Whenever the R code or the
+`Dockerfile` changes:
+
+```{bash}
+## 1. Stop any running instance of the tool from Galaxy
+
+## 2. Rebuild the image (from the ChromatogramsVis directory)
+TOOL_VERSION=`grep Version DESCRIPTION | cut -d: -f 2 | tr -d " "`
+CONTAINER_VERSION=`grep '<token name="@CONTAINER_VERSION@">' dev/interactivetool_chromatogramsvis.xml | cut -d'>' -f2 | cut -d'<' -f1`
+docker build . -t chromatogramsvis:${CONTAINER_VERSION}_${TOOL_VERSION} -f Dockerfile
+
+## 3. Start a new tool run from Galaxy
+```
+
+If you changed the XML file, copy it again into Galaxy:
+
+```{bash}
+cp dev/interactivetool_chromatogramsvis.xml ../galaxy/tools/interactive/
+```
+
+Galaxy reloads tool XML files automatically in most development setups; if the
+changes do not show up, restart Galaxy (`Ctrl+C` and `./run.sh`).
+
+If you change the **package version** in `DESCRIPTION`, make sure the image
+tag referenced in the XML file still matches the image you built.
+
+# Troubleshooting
+
+**The tool does not appear in the Galaxy panel**: check that (i) the XML file
+is in `galaxy/tools/interactive/`, (ii) the `tool_conf.xml` line points to the
+right file name, (iii) Galaxy was restarted after editing `tool_conf.xml`.
+Also make sure that you edited the file Galaxy is actually using
+(`tool_config_file` in `galaxy.yml`).
+
+**The Shiny app opens but shows an error**: inspect the container logs while
+the tool is running or open the bash:
+
+```{bash}
+docker ps
+docker logs <container_id>
+docker exec -it <container_id> bash
+```
+
+# Session information
+
+```{r session-info, eval = TRUE}
+sessionInfo()
+```

@@ -1,6 +1,6 @@
 Package: ChromatogramsVis
 Title: Visualising and Exploring Chromatograms Data
-Version: 0.1.8
+Version: 0.1.9
 Description: This package defines a Shiny app to visualise and explore mass
     spectrometry data stored as Chromatograms objects.
 Authors@R:
@@ -20,21 +20,27 @@ Depends:
 Imports:
     shiny,
     shinydashboard,
+    shinybusy,
     colourpicker,
     DT,
     ggplot2,
     htmltools,
     Spectra,
     MsExperiment,
+    MsStash,
+    MsExperimentStash,
     jsonlite,
     methods
 Suggests:
     mzR,
     MsDataHub,
     testthat,
-    shinytest2
+    shinytest2,
+    knitr,
+    BiocStyle
 License: Artistic-2.0
 Encoding: UTF-8
+VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/RforMassSpectrometry/ChromatogramsVis/issues
 URL: https://rformassspectrometry.github.io/ChromatogramsVis

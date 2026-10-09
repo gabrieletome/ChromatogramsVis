@@ -22,7 +22,7 @@
   <icon src="ChromatogramsVis.png"/>
   <description>Visualization tool for Chromatograms Object</description>
   <macros>
-    <token name="@TOOL_VERSION@">0.1.8</token>
+    <token name="@TOOL_VERSION@">0.1.9</token>
     <token name="@CONTAINER_VERSION@">0.1.2</token>
     <token name="@VERSION_SUFFIX@">0</token>
   </macros>
@@ -92,6 +92,7 @@
         <option value="raw">mzML file</option>
         <option value="rds">RDS with Chromatograms object</option>
         <option value="rds_ms">RDS with MsExperiment object</option>
+        <option value="msstash">Alabaster MsExperimentStash</option>
       </param>
       <when value="raw">
         <param name="raw_file" type="data" label="mzML file"
@@ -106,6 +107,15 @@
         <param name="rds_ms_file" type="data" label="RDS file"
                help="Select a .RDS file with inside a single
                       MsExperiment object" />
+        <param name="summarize_method" type="select" label="Select method: ">
+          <option value="sum">Total Ion Chromatogram (TIC)</option>
+          <option value="max">Base Peak Chromatogram (BPC)</option>
+        </param>
+      </when>
+      <when value="msstash">
+        <param name="msstash_file" type="data" label="ZIP file or folder"
+               help="Select a .ZIP file or the directory with inside the
+                      MsExperimentStash" />
         <param name="summarize_method" type="select" label="Select method: ">
           <option value="sum">Total Ion Chromatogram (TIC)</option>
           <option value="max">Base Peak Chromatogram (BPC)</option>
@@ -140,16 +150,21 @@ ChromatogramsVis requires the following input file for a new visualization:
 1. **mzML file**: the file is read with Chromatograms to generate the
     corresponding object. ChromatogramsVis is a visualization tool, where only
     `rtime` and `intensity` can be filtered, for additional analysis we suggest
-    to work on a R session and save the resulting object in RDS format.
+    to work on a R session and save the resulting object in RDS or MsStash
+    format.
 
 2. **RDS file with Chromatograms object**: a RDS file generated using
-    `saveRDS()` with inside a single Chromatograms object. IMPORTANTE: save the
+    `saveRDS()` with inside a single Chromatograms object. IMPORTANT: save the
     object with `ChromBackendMemory()`
 
 3. **RDS file with MsExperiment object**: a RDS file generated using
     `saveRDS()` with inside a single MsExperiment object. The summarization
     method can be "Total Ion Chromatogram (TIC)" (default) or "Base Peak
     Chromatogram (BPC)".
+
+4. **Alabaster MsExperimentStash**: a ZIP file or a folder with inside the
+    MsExperimentStash. The summarization method can be "Total Ion Chromatogram
+    (TIC)" (default) or "Base Peak Chromatogram (BPC)".
 
 Usage Tips
 ----------

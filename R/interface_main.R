@@ -1,6 +1,7 @@
 ## Load required libraries for Shiny Server
 library(shiny)
 library(shinydashboard)
+library(shinybusy)
 library(colourpicker)
 library(htmltools)
 
@@ -8,8 +9,8 @@ library(htmltools)
 #'
 #' Creates the user interface for the ChromatogramsVis Shiny application.
 #' Provides options to load chromatogram data from various sources (R console,
-#' raw files, RDS objects, or Galaxy history) and visualize them in different
-#' plot formats.
+#' raw files, RDS objects, MsStash or Galaxy history) and visualize them in
+#' different plot formats.
 #'
 #' @return A Shiny dashboard page object containing the UI structure
 #'
@@ -34,8 +35,9 @@ ui <- function(isGalaxyIE){
         sidebar = dashboardSidebar(
             radioButtons("input_cat", "Select import method: ",
                         choices = c(
-                            na.omit(ifelse(isGalaxyIE, NA, "From R")),
-                            "Raw data", "R object",
+                            na.omit(ifelse(isGalaxyIE, NA,
+                                            "From R")),
+                            "Raw data", "R object", "MsStash",
                             na.omit(ifelse(isGalaxyIE, "Galaxy History", NA))),
                         selected = "From R"),
             checkboxInput("load_in_memory", span("Load in all in memory",
@@ -81,6 +83,18 @@ ui <- function(isGalaxyIE){
                             "Upload the RDS file with the Chromatograms object",
                             accept = ".RDS"),
                     actionButton("load_rds_file", "Load object")
+                )
+            }),
+            conditionalPanel('input.input_cat == "MsStash"', {
+                fluidRow(
+                    radioButtons("summarize_method_stash", "Select method: ",
+                        choices = list("Total Ion Chromatogram (TIC)" = "sum",
+                                    "Base Peak Chromatogram (BPC)" = "max"),
+                        selected = "sum"),
+                    fileInput("msstash_file",
+                            "Upload the ZIP file with the MsStash object",
+                            accept = ".zip"),
+                    actionButton("load_msStash", "Load MsStash object")
                 )
             }),
             conditionalPanel('input.input_cat == "Galaxy History"', {

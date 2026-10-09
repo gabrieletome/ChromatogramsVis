@@ -70,7 +70,7 @@ chrOverlayGui <- function (id, object){
                 column(
                     width = 6,
                     downloadButton(ns("downloadChromatograms_overlay_RDS"),
-                            "Download RDS object")
+                            "Download filtered object")
                 )
             ),
             hr(),
