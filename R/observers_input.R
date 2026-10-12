@@ -12,7 +12,7 @@
 #' @description
 #'
 #' Handle the serve side of the input methods. Load data from various sources
-#' (R console, raw files, RDS objects, or Galaxy history), build a
+#' (R console, raw files, RDS objects, MsStash, or Galaxy history), build a
 #' Chromatograms object and generate the GUI for the visualization.
 #'
 #' @details
@@ -45,8 +45,8 @@ NULL
 #'
 #' @keywords internal
 # nocov start
-input_cat <- function(input, output, session,
-                        object_reactive, object_reactive_msexp) {
+input_cat <- function(input, output, session, object_reactive,
+                        object_reactive_msexp) {
     observeEvent(input$input_cat, {
         print(paste("input_cat:", input$input_cat))
         output$sidebarMenu <- renderUI(NULL)
@@ -60,6 +60,7 @@ input_cat <- function(input, output, session,
         ## clean reactive variable
         object_reactive(NULL)
         object_reactive_msexp(NULL)
+        remove_modal_spinner()
     })
 }
 # nocov end
@@ -84,15 +85,19 @@ load_r_obj <- function(input, output, session, object,
                 "Something went wrong! Missing R object parameter"
             ))
         } else {
+            show_modal_spinner(spin = "half-circle",
+                            text = "Loading object. This may take a while...")
             stopifnot(inherits(object, c("Chromatograms","MsExperiment")))
             if (inherits(object, "MsExperiment")) {
                 ## Save original MsExperiment for later filters
                 object_reactive_msexp(object)
 
-                s <- spectra(object)
-                object <- backendInitialize(new("ChromBackendSpectra"), s,
+                # s <- spectra(object)
+                # object <- backendInitialize(new("ChromBackendSpectra"), s,
+                #             summarize.method = input$console_summarize_method)
+                # object <- Chromatograms(object)
+                object <- Chromatograms(spectra(object),
                             summarize.method = input$console_summarize_method)
-                object <- Chromatograms(object)
             }
             if (!length(object))
                 stop("The 'Chromatograms' object is empty.")
@@ -114,6 +119,7 @@ load_r_obj <- function(input, output, session, object,
                     menuItem("Chromatograms Overlay", tabName = "chr_overlay")
                 )
             })
+            remove_modal_spinner()
         }
     })
 }
@@ -136,6 +142,8 @@ load_raw_file <- function(input, output, session, object_reactive) {
                 "Missing file. Please provide a valid input."
             ))
         } else {
+            show_modal_spinner(spin = "half-circle",
+                            text = "Loading object. This may take a while...")
             f <- input$raw_file$datapath
 
             if (input$load_in_memory)
@@ -155,6 +163,7 @@ load_raw_file <- function(input, output, session, object_reactive) {
                     menuItem("Chromatograms Overlay", tabName = "chr_overlay")
                 )
             })
+            remove_modal_spinner()
         }
     })
 }
@@ -180,6 +189,8 @@ load_rds_file <- function(input, output, session,
                 "Missing file. Please provide a valid input."
             ))
         } else {
+            show_modal_spinner(spin = "half-circle",
+                            text = "Loading object. This may take a while...")
             f <- input$rds_file$datapath
             object <- readRDS(f)
 
@@ -191,10 +202,12 @@ load_rds_file <- function(input, output, session,
                 object_reactive_msexp(object)
                 print(object_reactive_msexp)
 
-                s <- spectra(object)
-                object <- backendInitialize(new("ChromBackendSpectra"), s,
-                                    summarize.method = input$summarize_method)
-                object <- Chromatograms(object)
+                # s <- spectra(object)
+                # object <- backendInitialize(new("ChromBackendSpectra"), s,
+                #                     summarize.method = input$summarize_method)
+                # object <- Chromatograms(object)
+                object <- Chromatograms(spectra(object),
+                            summarize.method = input$summarize_method)
             }
             if (!length(object))
                 stop("The 'Chromatograms' object is empty.")
@@ -218,6 +231,74 @@ load_rds_file <- function(input, output, session,
                     menuItem("Chromatograms Overlay", tabName = "chr_overlay")
                 )
             })
+            remove_modal_spinner()
+        }
+    })
+}
+# nocov end
+
+## Load MsStash file
+#' @rdname inputServer
+#'
+#' @description
+#' Unzip the archive to retrive the MsStash folder and read it in a
+#' MsExperiment object. Convert the object to `Chromatograms` based
+#' on the summarized method selected. If `"In memory"` option is selected it
+#' change the backend to `ChromBackendMemory`. Activate the GUIs.
+#'
+#' @keywords internal
+# nocov start
+load_msstash_file <- function(input, output, session,
+                        object_reactive, object_reactive_msexp) {
+    observeEvent(input$load_msStash, {
+        if (is.null(input$msstash_file)) {
+            showModal(modalDialog(
+                title = "Missing file",
+                "Missing file. Please provide a valid input."
+            ))
+        } else {
+            show_modal_spinner(spin = "half-circle",
+                            text = "Loading object. This may take a while...")
+            shiny:::flushReact()
+            f <- input$msstash_file$datapath
+            cat(f)
+            list_files <- unzip(f, exdir = tempfile())
+            dir <- dirname(list_files)[which.min(do.call(nchar,
+                                                    list(dirname(list_files))))]
+            cat(dir)
+            ap <- AlabasterParam(dir)
+            print(ap)
+            object <- readMsObject(MsExperiment(), ap)
+            # object <- spectra(object)
+            # object <- backendInitialize(new("ChromBackendSpectra"), object,
+            #                 summarize.method = input$summarize_method_stash)
+            # object <- Chromatograms(object)
+            object <- Chromatograms(spectra(object),
+                            summarize.method = input$summarize_method_stash)
+
+            if (!length(object))
+                stop("The 'Chromatograms' object is empty.")
+
+            if (input$load_in_memory)
+                object <- setBackend(object, ChromBackendMemory())
+
+            object_reactive(object)
+            print(object_reactive())
+            output$chromatogramsPlot <- renderUI({
+                chrGui("chromatogramsPlot", object_reactive())
+            })
+            output$chromatogramsOverlayPlot <- renderUI({
+                chrOverlayGui("chromatogramsOverlayPlot",
+                            object_reactive())
+            })
+            output$sidebarMenu <- renderUI({
+                sidebarMenu(
+                    id="tabs",
+                    menuItem("Chromatograms", tabName = "chr", selected = TRUE),
+                    menuItem("Chromatograms Overlay", tabName = "chr_overlay")
+                )
+            })
+            remove_modal_spinner()
         }
     })
 }
@@ -238,10 +319,10 @@ load_rds_file <- function(input, output, session,
 load_galaxy <- function(input, output, session,
                         object_reactive, object_reactive_msexp) {
     observeEvent(input$load_galaxy, {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Loading object. This may take a while...")
         setwd(paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),"../working",sep="/"))
-        print(getwd())
         config <- jsonlite::fromJSON("chromatogramsvis-gxit-inputs.json")
-        print(config)
 
         if (config$input_mode$mode == "rds") {
             filePath <- config$input_mode$rds_file
@@ -249,6 +330,21 @@ load_galaxy <- function(input, output, session,
         } else if (config$input_mode$mode == "rds_ms") {
             filePath <- config$input_mode$rds_ms_file
             object <- readRDS(filePath)
+        } else if (config$input_mode$mode == "msstash") {
+            filePath <- config$input_mode$msstash_file
+            if(!dir.exists(gsub(".dat$", "_files", filePath))){
+                out_dir <- tempfile()
+                dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+                list_files <- unzip(filePath, exdir = out_dir)
+            } else {
+                dir <- gsub(".dat$", "_files", filePath)
+                list_files <- list.files(dir, recursive = TRUE,
+                                        pattern = "OBJECT", full.names = TRUE)
+            }
+            dir <- dirname(list_files)[which.min(do.call(nchar,
+                                                    list(dirname(list_files))))]
+            ap <- AlabasterParam(dir)
+            object <- readMsObject(MsExperiment(), ap)
         } else if (config$input_mode$mode == "raw") {
             filePath <- config$input_mode$raw_file
             be <- backendInitialize(ChromBackendMzR(), files = filePath)
@@ -265,10 +361,12 @@ load_galaxy <- function(input, output, session,
             ## Save original MsExperiment for later filters
             object_reactive_msexp(object)
 
-            s <- spectra(object)
-            object <- backendInitialize(new("ChromBackendSpectra"), s,
-                        summarize.method = config$input_mode$summarize_method)
-            object <- Chromatograms(object)
+            # s <- spectra(object)
+            # object <- backendInitialize(new("ChromBackendSpectra"), s,
+            #             summarize.method = config$input_mode$summarize_method)
+            # object <- Chromatograms(object)
+            object <- Chromatograms(spectra(object),
+                            summarize.method = input$summarize_method)
         }
         if (!length(object))
             stop("The 'Chromatograms' object is empty.")
@@ -293,6 +391,7 @@ load_galaxy <- function(input, output, session,
         ## Not here, but for completeness:
         ## Here is where the output would go:
         setwd(paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),"../working/chromatogramsvis_outputs",sep="/"))
+        remove_modal_spinner()
     })
 }
 # nocov end

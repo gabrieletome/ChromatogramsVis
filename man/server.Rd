@@ -13,8 +13,8 @@ preloaded data.}
 \description{
 Server logic for the ChromatogramsVis Shiny application.
 Handles chromatogram data loading from multiple sources (R console, raw
-files, RDS objects, or Galaxy history) and manages interactive visualization
-rendering.
+files, RDS objects, MsStash or Galaxy history) and manages interactive
+visualization rendering.
 }
 \details{
 The server function manages:

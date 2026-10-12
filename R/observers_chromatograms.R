@@ -53,6 +53,8 @@ slider <- function(input, output, session, object_reactive, i,
     ns <- NS(id)
 
     observeEvent(input[[ns("slider")]], {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Loading...")
         print(paste0("Slider value: ", input[[ns("slider")]]))
         i(as.integer(input[[ns("slider")]]))
         output$plotChromatograms <- renderPlot(
@@ -67,6 +69,7 @@ slider <- function(input, output, session, object_reactive, i,
         output$dfChromatograms <- renderDT(get_df(object_reactive(), i(),
                                         xlim = input[[ns("chr_xlim")]],
                                         ylim = input[[ns("chr_ylim")]]))
+        remove_modal_spinner()
     })
 }
 # nocov end
@@ -83,6 +86,8 @@ nxt <- function(input, output, session, object_reactive, i,
     ns <- NS(id)
 
     observeEvent(input[[ns("nxt")]], {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Loading...")
         print(paste0("Next button clicked. Current index: ", i()))
         if (i() < length(object_reactive())) i(i() + 1)
         updateSliderInput(session = session, inputId = ns("slider"),
@@ -99,6 +104,7 @@ nxt <- function(input, output, session, object_reactive, i,
         output$dfChromatograms <- renderDT(get_df(object_reactive(), i(),
                                 xlim = input[[ns("chr_xlim")]],
                                 ylim = input[[ns("chr_ylim")]]))
+        remove_modal_spinner()
     })
 }
 # nocov end
@@ -115,6 +121,8 @@ prv <- function(input, output, session, object_reactive, i,
     ns <- NS(id)
 
     observeEvent(input[[ns("prv")]], {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Loading...")
         if (i() > 1) i(i() - 1)
         updateSliderInput(session = session, inputId = ns("slider"),
                             value = i())
@@ -130,6 +138,7 @@ prv <- function(input, output, session, object_reactive, i,
         output$dfChromatograms <- renderDT(get_df(object_reactive(), i(),
                                 xlim = input[[ns("chr_xlim")]],
                                 ylim = input[[ns("chr_ylim")]]))
+        remove_modal_spinner()
     })
 }
 # nocov end

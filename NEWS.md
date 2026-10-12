@@ -1,5 +1,11 @@
 # ChromatogramsVis 0.1
 
+## Changes in 0.1.9
+
+- Add support to MsStash object
+- Add busy modal
+- Add vignette to run `ChromatogramsVis` inside `Galaxy`
+
 ## Changes in 0.1.8
 
 - Update visibility sidebar menu

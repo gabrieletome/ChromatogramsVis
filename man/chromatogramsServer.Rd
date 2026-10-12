@@ -67,7 +67,7 @@ Zoom/unzoom based on double click
 
 The function contains all the shiny functions that update the \code{output} shiny
 variable of the Chromatograms plot. It is included alse the function to
-download the plot and the filtered RDS file.
+download the plot and the filtered object.
 }
 \details{
 This module contains multiple \code{observeEvent} handlers that update the plot

@@ -85,7 +85,7 @@ chrGui <- function (id, object){
                 column(
                     width = 6,
                     downloadButton(ns("downloadChromatograms_RDS"),
-                            "Download RDS object")
+                            "Download filtered object")
                 )
             ),
             hr(),
