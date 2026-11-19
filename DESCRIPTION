@@ -45,4 +45,4 @@ Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/RforMassSpectrometry/ChromatogramsVis/issues
 URL: https://rformassspectrometry.github.io/ChromatogramsVis
 biocViews: Proteomics, MassSpectrometry, Metabolomics, Visualization
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

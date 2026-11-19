@@ -175,5 +175,49 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
             f
         }
     )
+
+    observeEvent(input[[ns("exportGalaxyChromatograms_overlay_zip")]], {
+        obj <- object_reactive()
+        xrange <- round(unlist(rtime(obj)), 2)
+        yrange <- round(unlist(intensity(obj)), 2)
+
+        if(!is.null(object_reactive_msexp())){
+            obj <- object_reactive_msexp()
+            if (input[[ns("chrOverlay_xlim")]][1] !=
+                    min(xrange, na.rm = TRUE) |
+                input[[ns("chrOverlay_xlim")]][2] !=
+                    max(xrange, na.rm = TRUE)) {
+                obj <- filterSpectra(obj, filterRt,
+                            rt = c(min(input[[ns("chrOverlay_xlim")]][1],
+                                        na.rm = TRUE),
+                                    max(input[[ns("chrOverlay_xlim")]][2],
+                                        na.rm = TRUE)))
+
+            }
+
+            if (input[[ns("chrOverlay_ylim")]][1] !=
+                    min(yrange, na.rm = TRUE) |
+                input[[ns("chrOverlay_ylim")]][2] !=
+                    max(yrange, na.rm = TRUE)) {
+                obj <- filterSpectra(obj, filterIntensity,
+                        intensity = c(min(input[[ns("chrOverlay_ylim")]][1],
+                                        na.rm = TRUE),
+                                    max(input[[ns("chrOverlay_ylim")]][2],
+                                        na.rm = TRUE)))
+            }
+
+            #TODO: save with MsExpetimentStash
+            filePath <- paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),
+                            "../working/chromatogramsvis_outputs",
+                            "msexperimentStash_obj",
+                            sep="/")
+            print(paste0("Saving to: ", filePath))
+            message(paste0("Saving to: ", filePath))
+
+            saveObject(obj, path = filePath, consolidate = TRUE)
+            zip(zipfile = paste0(filePath, ".zip"), files = filePath,
+                flags = "-r")
+        }
+    })
 }
 # nocov end

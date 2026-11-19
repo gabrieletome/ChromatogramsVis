@@ -124,12 +124,12 @@
     </conditional>
   </inputs>
 
-    <!-- <outputs>
-      <data name="chromatogramsvis_project" format="gz" label="ChromatogramsVis Interactive Tool"></data>
-      <collection name="output_collection" type="list" label="ChromatogramsVis outputs">
-        <discover_datasets pattern="__name_and_ext__" directory="chromatogramsvis_outputs/" assign_primary_output="true" recurse="true"/>
-      </collection>
-    </outputs> -->
+  <outputs>
+    <data name="chromatogramsvis_project" format="zip" label="ChromatogramsVis Interactive Tool">
+      <discover_datasets pattern="(?P&lt;designation&gt;.+)\.zip" ext="zip"
+                        directory="chromatogramsvis_outputs/" recurse="true" visible="true"/>
+    </data>
+  </outputs>
 
 
   <tests>

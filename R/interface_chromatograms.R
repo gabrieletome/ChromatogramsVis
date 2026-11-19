@@ -84,8 +84,12 @@ chrGui <- function (id, object){
                 ),
                 column(
                     width = 6,
-                    downloadButton(ns("downloadChromatograms_RDS"),
-                            "Download filtered object")
+                    if(galaxy_instance())
+                        actionButton(ns("exportGalaxyChromatograms_zip"),
+                                    "Export to Galaxy")
+                    else
+                        downloadButton(ns("downloadChromatograms_RDS"),
+                                    "Download filtered object")
                 )
             ),
             hr(),

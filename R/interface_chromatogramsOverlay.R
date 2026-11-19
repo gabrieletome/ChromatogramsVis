@@ -69,8 +69,13 @@ chrOverlayGui <- function (id, object){
                 ),
                 column(
                     width = 6,
-                    downloadButton(ns("downloadChromatograms_overlay_RDS"),
-                            "Download filtered object")
+                    if(galaxy_instance())
+                        actionButton(
+                                    ns("exportGalaxyChromatograms_overlay_zip"),
+                                    "Export to Galaxy")
+                    else
+                        downloadButton(ns("downloadChromatograms_overlay_RDS"),
+                                    "Download filtered object")
                 )
             ),
             hr(),
