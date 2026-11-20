@@ -268,12 +268,13 @@ load_msstash_file <- function(input, output, session,
             cat(dir)
             ap <- AlabasterParam(dir)
             print(ap)
-            object <- readMsObject(MsExperiment(), ap)
+            obj <- readMsObject(MsExperiment(), ap)
+            object_reactive_msexp(obj)
             # object <- spectra(object)
             # object <- backendInitialize(new("ChromBackendSpectra"), object,
             #                 summarize.method = input$summarize_method_stash)
             # object <- Chromatograms(object)
-            object <- Chromatograms(spectra(object),
+            object <- Chromatograms(spectra(obj),
                             summarize.method = input$summarize_method_stash)
 
             if (!length(object))
