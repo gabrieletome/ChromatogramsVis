@@ -20,7 +20,7 @@ RUN R -e 'pak::pak(c("devtools", "BiocManager"))'
 RUN R -e 'pak::pak(c("Rformassspectrometry/Spectra", "Rformassspectrometry/MsExperimentStash", "Rformassspectrometry/MsStash", "Rformassspectrometry/SpectraStash"))'
 
 RUN R -e 'pak::pak(c("mzR", "MsExperiment", "MsBackendMetaboLights", "alabaster.base", "alabaster.matrix"))'
-RUN R -e 'pak::pak(c("shinydashboard", "shinybusy", "colourpicker", "DT"))'
+RUN R -e 'pak::pak(c("shinydashboard", "shinybusy", "colourpicker", "DT", "rhandsontable"))'
 # ## After update of Chromatograms package, remove the following line.
 RUN R -e 'pak::pak("Rformassspectrometry/Chromatograms@gabri")'
 

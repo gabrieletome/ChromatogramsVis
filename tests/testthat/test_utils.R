@@ -26,7 +26,7 @@ test_that("get_df works", {
     expect_true(all(res_lim$intensity >= 30000 & res_lim$intensity <= 40000))
 })
 
-test_that(".parse_chrOverlay_idx parses print-range style selections", {
+test_that(".parse_chrOverlay_idx works", {
     expect_equal(.parse_chrOverlay_idx(chr_mzr, "3"), 3L)
     expect_equal(.parse_chrOverlay_idx(chr_mzr, "2-4"), 2:4)
     expect_equal(.parse_chrOverlay_idx(chr_mzr, "1-3,5,8-10"), c(1:3, 5L, 8:10))

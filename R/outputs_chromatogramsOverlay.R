@@ -18,11 +18,11 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
         req(object_reactive())
 
         obj <- object_reactive()
-        gg <- ggplotChromatogramsOverlay(obj[.parse_chrOverlay_idx(obj,
-                                                input[[ns("chrOverlay_idx")]])],
+        obj <- obj[.parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])]
+        gg <- ggplotChromatogramsOverlay(obj,
                             xlim = input[[ns("chrOverlay_xlim")]],
                             ylim = input[[ns("chrOverlay_ylim")]],
-                            col = input[[ns("chrOverlay_color")]],
+                            col = .get_colors(id, input, obj),
                             pch = input[[ns("chrOverlay_pch")]],
                             cex = input[[ns("chrOverlay_cex")]],
                             lwd = input[[ns("chrOverlay_lwd")]],
@@ -37,7 +37,8 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
         req(object_reactive())
 
         obj <- object_reactive()
-        get_df(obj[.parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])],
+        get_df(obj[.parse_chrOverlay_idx(obj,
+                                        input[[ns("chrOverlay_idx")]])],
                 xlim = input[[ns("chrOverlay_xlim")]],
                 ylim = input[[ns("chrOverlay_ylim")]])
     })
@@ -50,7 +51,8 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
         }
         ## Select the point closest to the mouse
         obj <- object_reactive()
-        obj <- obj[.parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])]
+        obj <- obj[.parse_chrOverlay_idx(obj,
+                                        input[[ns("chrOverlay_idx")]])]
         v_l <- peaksData(obj)
         mz_name <- mz(obj)
         if(any(!is.na(mz_name)))
@@ -88,15 +90,31 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
         )
     })
 
+    output[[ns("chrOverlay_color_manual")]] <- renderRHandsontable({
+        obj <- object_reactive()
+        obj <- obj[.parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])]
+        n <- length(obj)
+        mz_name <- mz(obj)
+        df <- data.frame(
+            id = if (any(!is.na(mz_name)) & all(mz_name != Inf)) mz_name
+                 else seq_len(n),
+            color = rep("#00000080", n))
+        print(df)
+        rhandsontable(df, rowHeaders = NULL, stretchH = "all", height = 300) |>
+            hot_col("id", readOnly = TRUE) |>
+            hot_col("color", type = "text")
+    })
+
     output[[ns("downloadChromatograms_overlay")]] <- downloadHandler(
         filename = "chromatogramsOverlay.png",
         content = function(file) {
             obj <- object_reactive()
-            ggsave(ggplotChromatogramsOverlay(obj[.parse_chrOverlay_idx(obj,
-                                                input[[ns("chrOverlay_idx")]])],
+            obj <- obj[.parse_chrOverlay_idx(obj,
+                                            input[[ns("chrOverlay_idx")]])]
+            ggsave(ggplotChromatogramsOverlay(obj,
                             xlim = input[[ns("chrOverlay_xlim")]],
                             ylim = input[[ns("chrOverlay_ylim")]],
-                            col = input[[ns("chrOverlay_color")]],
+                            col = .get_colors(id, input, obj),
                             pch = input[[ns("chrOverlay_pch")]],
                             cex = input[[ns("chrOverlay_cex")]],
                             lwd = input[[ns("chrOverlay_lwd")]],

@@ -25,6 +25,7 @@ Imports:
     DT,
     ggplot2,
     htmltools,
+    rhandsontable,
     Spectra,
     MsExperiment,
     MsStash,

@@ -30,10 +30,22 @@ importFrom(Spectra,
 )
 importFrom(colourpicker,colourInput)
 importFrom(ggplot2,ggsave)
+importFrom(grDevices,
+  colors,
+  rgb
+)
 importFrom(methods,new)
+importFrom(rhandsontable,
+  hot_to_r,
+  rHandsontableOutput,
+  renderRHandsontable
+)
 importFrom(shinybusy,
   remove_modal_spinner,
   show_modal_spinner
 )
-importFrom(stats,na.omit)
+importFrom(stats,
+  na.omit,
+  runif
+)
 importFrom(utils,packageVersion)

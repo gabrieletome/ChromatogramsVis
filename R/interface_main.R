@@ -4,6 +4,7 @@ library(shinydashboard)
 library(shinybusy)
 library(colourpicker)
 library(htmltools)
+library(rhandsontable)
 
 #' ChromatogramsVis Dashboard UI
 #'
