@@ -25,3 +25,17 @@ test_that("get_df works", {
     expect_true(all(res_lim$rtime >= 3.5 & res_lim$rtime <= 7))
     expect_true(all(res_lim$intensity >= 30000 & res_lim$intensity <= 40000))
 })
+
+test_that(".parse_chrOverlay_idx parses print-range style selections", {
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "3"), 3L)
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "2-4"), 2:4)
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "1-3,5,8-10"), c(1:3, 5L, 8:10))
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, " 1 - 3 , 5 "), c(1:3, 5L))
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "2,2,1-3"), c(2L, 1L, 3L))
+
+    all <- 1:length(chr_mzr)
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "abc"), all)
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "1,abc"), all)
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "0"), all)
+    expect_equal(.parse_chrOverlay_idx(chr_mzr, "5-200"), all)
+})

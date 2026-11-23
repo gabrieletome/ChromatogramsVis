@@ -45,3 +45,36 @@ get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
                 is.na(v$intensity), ]
     v
 }
+
+#' Parse a range selection of chromatograms
+#'
+#' @param object A `Chromatograms` object.
+#' @param text `character(1)` with selection of Chromatograms to visualize.
+#'     (e.g. `"1-3,5,8-10"`).
+#'
+#' @return `integer` vector of unique indixes. If `text` has an invalid
+#'     token or selects indixes outside `1::length(object)` the funtion return
+#'     the selection with all indexes.
+#'
+#' @noRd
+.parse_chrOverlay_idx <- function(id, object, text) {
+    ns <- NS(id)
+
+    n = length(object)
+    parts <- strsplit(gsub("\\s", "", text), ",")[[1]]
+    idx <- unlist(lapply(parts, function(p) {
+        if (grepl("^\\d+$", p)){
+            as.integer(p)
+        } else if (grepl("^\\d+-\\d+$", p)) {
+            r <- as.integer(strsplit(p, "-")[[1]])
+            r[1]:r[2]
+        } else {
+            1:n
+        }
+    }))
+    idx <- unique(idx)
+    if (any(idx < 1 | idx > n))
+        1:n
+    else
+        idx
+}

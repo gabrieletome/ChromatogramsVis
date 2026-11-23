@@ -22,6 +22,8 @@ chrOverlayGui <- function (id, object){
     tagList(
         column(
             width = 2,
+            textInput(ns("chrOverlay_idx"), "Chromatograms to visualize: ",
+                      value = paste0("1-", length(object)), updateOn = "blur"),
             sliderInput(ns("chrOverlay_xlim"), "Resize X axes:",
                     value = c(min(xrange, na.rm = T), max(xrange, na.rm = T)),
                     min = min(xrange, na.rm = T), max = max(xrange, na.rm = T),
