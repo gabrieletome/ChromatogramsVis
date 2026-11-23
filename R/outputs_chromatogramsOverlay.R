@@ -127,7 +127,7 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                 if (input[[ns("chrOverlay_ylim")]][1] !=
                         min(yrange, na.rm = TRUE) |
                     input[[ns("chrOverlay_ylim")]][2] !=
-                        max(yrange, na.rm = TRUE)) {
+                        max(yrange, na.rm = TRUE)*1.05) {
                     obj <- filterPeaksData(obj, variables = "intensity",
                             ranges = c(min(input[[ns("chrOverlay_ylim")]][1],
                                             na.rm = TRUE),
@@ -157,7 +157,7 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                 if (input[[ns("chrOverlay_ylim")]][1] !=
                         min(yrange, na.rm = TRUE) |
                     input[[ns("chrOverlay_ylim")]][2] !=
-                        max(yrange, na.rm = TRUE)) {
+                        max(yrange, na.rm = TRUE)*1.05) {
                     obj <- filterSpectra(obj, filterIntensity,
                             intensity = c(min(input[[ns("chrOverlay_ylim")]][1],
                                             na.rm = TRUE),
@@ -198,7 +198,7 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
             if (input[[ns("chrOverlay_ylim")]][1] !=
                     min(yrange, na.rm = TRUE) |
                 input[[ns("chrOverlay_ylim")]][2] !=
-                    max(yrange, na.rm = TRUE)) {
+                    max(yrange, na.rm = TRUE)*1.05) {
                 obj <- filterSpectra(obj, filterIntensity,
                         intensity = c(min(input[[ns("chrOverlay_ylim")]][1],
                                         na.rm = TRUE),
