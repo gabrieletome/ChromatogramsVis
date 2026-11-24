@@ -102,7 +102,9 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                  else seq_len(n),
             color = rep("#00000080", n))
         print(df)
-        rhandsontable(df, rowHeaders = NULL, stretchH = "all", height = 300) |>
+        rhandsontable(df, rowHeaders = NULL, stretchH = "all", height = 300,
+            maxRows = nrow(df), fillHandle = list(direction = "vertical",
+                                                autoInsertRow = FALSE)) |>
             hot_col("id", readOnly = TRUE) |>
             hot_col("color", type = "text")
     })
@@ -208,6 +210,8 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
     )
 
     observeEvent(input[[ns("exportGalaxyChromatograms_overlay_zip")]], {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Exporting...")
         obj <- object_reactive()
         xrange <- round(unlist(rtime(obj)), 2)
         yrange <- round(unlist(intensity(obj)), 2)
@@ -248,8 +252,23 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
             message(paste0("Saving to: ", filePath))
 
             saveObject(obj, path = filePath, consolidate = TRUE)
-            zip(zipfile = paste0(filePath, ".zip"), files = filePath,
+            f <- zip(zipfile = paste0(filePath, ".zip"), files = filePath,
                 flags = "-r")
+            remove_modal_spinner()
+            showModal(modalDialog(
+                title = "Data available in Galaxy",
+                paste0("The data are now available in Galaxy. Now you can ",
+                        "close the app and stop the app to get the data in ",
+                        "your history.")
+            ))
+            f
+        } else {
+            showModal(modalDialog(
+                title = "Error in exporting",
+                paste0("The export to Galaxy is currently available only for ",
+                        "MsExperimentStash input. We are working on exporting ",
+                        "the other file format.")
+            ))
         }
     })
 }

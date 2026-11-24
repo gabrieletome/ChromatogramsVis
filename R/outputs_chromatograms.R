@@ -171,6 +171,8 @@ base_chromatograms <- function(input, output, session, object_reactive,
     )
 
     observeEvent(input[[ns("exportGalaxyChromatograms_zip")]], {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Exporting...")
         obj <- object_reactive()
         xrange <- round(unlist(rtime(obj)), 2)
         yrange <- round(unlist(intensity(obj)), 2)
@@ -205,8 +207,23 @@ base_chromatograms <- function(input, output, session, object_reactive,
             message(paste0("Saving to: ", filePath))
 
             saveObject(obj[i()], path = filePath, consolidate = TRUE)
-            zip(zipfile = paste0(filePath, ".zip"), files = filePath,
+            f <- zip(zipfile = paste0(filePath, ".zip"), files = filePath,
                 flags = "-r")
+            remove_modal_spinner()
+            showModal(modalDialog(
+                title = "Data available in Galaxy",
+                paste0("The data are now available in Galaxy. Now you can ",
+                        "close the app and stop the app to get the data in ",
+                        "your history.")
+            ))
+            f
+        } else {
+            showModal(modalDialog(
+                title = "Error in exporting",
+                paste0("The export to Galaxy is currently available only for ",
+                        "MsExperimentStash input. We are working on exporting ",
+                        "the other file format.")
+            ))
         }
     })
 }
