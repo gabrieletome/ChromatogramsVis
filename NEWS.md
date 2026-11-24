@@ -2,13 +2,14 @@
 
 ## Changes in 0.2.0
 
-- Export MsExperimentStash back to Galaxy in zip archive
-- Add textbox to filter the chromatograms to show in the overlay plot
+- Export MsExperimentStash back to Galaxy in a zip archive
+- Add a textbox to filter the chromatograms to show in the overlay plot
 - Add new color options for the overlay plot
-- Fix bug missing assignment of MsExperimentStash to reactive variable
-- Fix bug of not showed point when it was equal to max limit of y axes
-- Update DockerFile dependency
-- Update shiny test.
+- Fix bug: missing assignment of MsExperimentStash to reactive variable
+- Fix bug where points were not shown when they were equal to the max limit of
+  the y-axis
+- Update Dockerfile dependencies
+- Update Shiny test
 
 # ChromatogramsVis 0.1
 
