@@ -246,6 +246,8 @@ load_rds_file <- function(input, output, session,
 #' on the summarized method selected. If `"In memory"` option is selected it
 #' change the backend to `ChromBackendMemory`. Activate the GUIs.
 #'
+#' @importFrom utils unzip
+#'
 #' @keywords internal
 # nocov start
 load_msstash_file <- function(input, output, session,
@@ -314,6 +316,8 @@ load_msstash_file <- function(input, output, session,
 #' convert to `Chromatograms` based on the summarized method selected. If
 #' `"In memory"` option is selected it change the backend to
 #' `ChromBackendMemory`. Activate the GUIs.
+#'
+#' @importFrom utils unzip
 #'
 #' @keywords internal
 # nocov start

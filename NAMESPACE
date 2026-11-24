@@ -48,4 +48,8 @@ importFrom(stats,
   na.omit,
   runif
 )
-importFrom(utils,packageVersion)
+importFrom(utils,
+  packageVersion,
+  unzip,
+  zip
+)

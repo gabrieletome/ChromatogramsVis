@@ -5,6 +5,8 @@
 #' variable of the Chromatograms Overlay plot. It is included alse the function
 #' to download the plot and the filtered object.
 #'
+#' @importFrom utils unzip
+#'
 #' @keywords internal
 # nocov start
 base_chromatogramsOverlay <- function(input, output, session, object_reactive,

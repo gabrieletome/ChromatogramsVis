@@ -4,11 +4,6 @@ FROM rocker/shiny:4.6.1
 LABEL maintainer="Gabriele Tomè <gabriele.tome@eurac.edu>"
 LABEL Description="ChromatogramsVis."
 
-# RUN apt-get -y --allow-releaseinfo-change update && apt-get -y install \
-#   netcdf-bin libnetcdf-dev libdigest-sha-perl libigraph-dev \
-#   xorg-dev libglu1-mesa-dev freeglut3-dev libgomp1 libxml2-dev gcc g++ \
-#   libssl-dev gdebi-core libharfbuzz-dev libfribidi-dev libtiff5-dev
-
 RUN echo 'sanitize_errors off;disable_protocols xdr-streaming xhr-streaming iframe-eventsource iframe-htmlfile;' >> /etc/shiny-server/shiny-server.conf
 
 ADD DESCRIPTION /tmp/ChromatogramsVis/DESCRIPTION

@@ -4,13 +4,13 @@ library(MsDataHub)
 library(Chromatograms)
 library(ChromatogramsVis)
 
-# A data.frame with chromatogram variables.
+## A data.frame with chromatogram variables.
 cdata <- data.frame(
     msLevel = c(1L, 1L),
     mz = c(112.2, 123.3),
     chromIndex = c(1L, 2L)
 )
-# Retention time and intensity values for each chromatogram.
+## Retention time and intensity values for each chromatogram.
 pdata <- list(
     data.frame(
         rtime = c(11, 12.4, 12.8, 13.2, 14.6, 15.1, 16.5),
@@ -21,7 +21,7 @@ pdata <- list(
         intensity = c(100, 180.1, 300.45, 1400, 1200.3, 300.2, 150.1)
     )
 )
-# Create and initialize the backend
+## Create and initialize the backend
 be <- backendInitialize(ChromBackendMemory(),
                         chromData = cdata, peaksData = pdata)
 chr <- Chromatograms(be)
@@ -29,6 +29,14 @@ chr <- Chromatograms(be)
 f <- MRM.standmix.5.mzML()
 be <- backendInitialize(ChromBackendMzR(), files = f)
 chr_mzr <- Chromatograms(be)
+
+## To register a new test of the shiny app first install the last version of
+## package:
+##     `devtools::install()`
+## and after run:
+##     `shinytest2::record_test("inst/app/")`
+## After the registration, update the path of the example rds in the file
+## `test-app-app.R`
 
 test_check("ChromatogramsVis")
 

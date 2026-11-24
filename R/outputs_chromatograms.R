@@ -5,6 +5,8 @@
 #' variable of the Chromatograms plot. It is included alse the function to
 #' download the plot and the filtered object.
 #'
+#' @importFrom utils zip
+#'
 #' @keywords internal
 # nocov start
 base_chromatograms <- function(input, output, session, object_reactive,
