@@ -77,7 +77,10 @@ get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
         idx
 }
 
+#' Function to get the color vector for the plot
+#'
 #' @importFrom stats runif
+#'
 #' @importFrom grDevices rgb
 #'
 #' @noRd
@@ -101,13 +104,6 @@ get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
             cols_tbl <- as.character(hot_to_r(tbl)$color)
             valid <- .is_valid_color(cols_tbl)
             cols[valid] <- cols_tbl[valid]
-
-            print("cols_tbl:")
-            print(cols_tbl)
-            print("valid:")
-            print(valid)
-            print("cols:")
-            print(cols)
         }
         cols
     })
@@ -121,4 +117,26 @@ get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
         !is.na(v) && (grepl("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$", v) ||
             v %in% colors())
     }, logical(1), USE.NAMES = FALSE)
+}
+
+#' Filter the Chromatograms/MsExperiment object by Rtime.
+#'
+#' @noRd
+.filter_exporting_object <- function(id, input, obj, xrange, xgui) {
+    ns <- NS(id)
+
+    if (input[[ns(xgui)]][1] != min(xrange, na.rm = TRUE) |
+        input[[ns(xgui)]][2] != max(xrange, na.rm = TRUE)) {
+        if (inherits(chr, "Chromatograms")) {
+            obj <- filterPeaksData(obj, variables = "rtime",
+                            ranges = c(min(input[[ns(xgui)]][1], na.rm = TRUE),
+                                       max(input[[ns(xgui)]][2], na.rm = TRUE)))
+        } else {
+            obj <- filterSpectra(obj, filterRt,
+                            rt = c(min(input[[ns(xgui)]][1], na.rm = TRUE),
+                                   max(input[[ns(xgui)]][2], na.rm = TRUE)))
+        }
+    }
+
+    obj
 }

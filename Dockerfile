@@ -10,6 +10,7 @@ ADD DESCRIPTION /tmp/ChromatogramsVis/DESCRIPTION
 WORKDIR /tmp/ChromatogramsVis/
 RUN R -e 'install.packages(c("pak", "tinytex", "xfun"))'
 RUN R -e 'pak::pak(c("devtools", "BiocManager"))'
+RUN R -e 'BiocManager::install(version = "3.24", ask = FALSE, update = FALSE)'
 # ## Install manually otherwise it is missing.
 ## Remove when the packages will be in BiocConductor.
 RUN R -e 'pak::pak(c("Rformassspectrometry/Spectra", "Rformassspectrometry/MsExperimentStash", "Rformassspectrometry/MsStash", "Rformassspectrometry/SpectraStash"))'

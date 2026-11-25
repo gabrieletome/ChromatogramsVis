@@ -110,28 +110,10 @@ base_chromatograms <- function(input, output, session, object_reactive,
                             text = "Loading...")
             obj <- object_reactive()
             xrange <- round(unlist(rtime(obj)), 2)
-            yrange <- round(unlist(intensity(obj)), 2)
             if(is.null(object_reactive_msexp())){
                 ## Filter and save chromatograms object
-                if (input[[ns("chr_xlim")]][1] != min(xrange, na.rm = TRUE) |
-                    input[[ns("chr_xlim")]][2] != max(xrange, na.rm = TRUE)) {
-                    obj <- filterPeaksData(obj, variables = "rtime",
-                                ranges = c(min(input[[ns("chr_xlim")]][1],
-                                                na.rm = TRUE),
-                                            max(input[[ns("chr_xlim")]][2],
-                                                na.rm = TRUE)))
-
-                }
-
-                if (input[[ns("chr_ylim")]][1] != min(yrange, na.rm = TRUE) |
-                    input[[ns("chr_ylim")]][2] !=
-                        max(yrange, na.rm = TRUE)*1.05) {
-                    obj <- filterPeaksData(obj, variables = "intensity",
-                                    ranges = c(min(input[[ns("chr_ylim")]][1],
-                                                    na.rm = TRUE),
-                                                max(input[[ns("chr_ylim")]][2],
-                                                    na.rm = TRUE)))
-                }
+                obj <- .filter_exporting_object(id, input, obj, xrange,
+                                                "chr_xlim")
 
                 obj <- setBackend(obj[i()], ChromBackendMemory())
                 obj <- filterEmptyChromatograms(obj)
@@ -139,27 +121,9 @@ base_chromatograms <- function(input, output, session, object_reactive,
             } else {
                 ## Filter and save MsExperiment object
                 obj <- object_reactive_msexp()
-                if (input[[ns("chr_xlim")]][1] != min(xrange, na.rm = TRUE) |
-                    input[[ns("chr_xlim")]][2] != max(xrange, na.rm = TRUE)) {
-                    obj <- filterSpectra(obj, filterRt,
-                                rt = c(min(input[[ns("chr_xlim")]][1],
-                                            na.rm = TRUE),
-                                        max(input[[ns("chr_xlim")]][2],
-                                            na.rm = TRUE)))
+                obj <- .filter_exporting_object(id, input, obj, xrange,
+                                                "chr_xlim")
 
-                }
-
-                if (input[[ns("chr_ylim")]][1] != min(yrange, na.rm = TRUE) |
-                    input[[ns("chr_ylim")]][2] !=
-                        max(yrange, na.rm = TRUE)*1.05) {
-                    obj <- filterSpectra(obj, filterIntensity,
-                                intensity = c(min(input[[ns("chr_ylim")]][1],
-                                                na.rm = TRUE),
-                                            max(input[[ns("chr_ylim")]][2],
-                                                na.rm = TRUE)))
-                }
-
-                #TODO: save with MsExpetimentStash
                 saveObject(obj[i()], path = gsub(".zip", "", file),
                             consolidate = TRUE)
                 f <- zip(zipfile = file, files = gsub(".zip", "", file),
@@ -175,36 +139,15 @@ base_chromatograms <- function(input, output, session, object_reactive,
                         text = "Exporting...")
         obj <- object_reactive()
         xrange <- round(unlist(rtime(obj)), 2)
-        yrange <- round(unlist(intensity(obj)), 2)
 
         if(!is.null(object_reactive_msexp())){
             obj <- object_reactive_msexp()
-            if (input[[ns("chr_xlim")]][1] != min(xrange, na.rm = TRUE) |
-                input[[ns("chr_xlim")]][2] != max(xrange, na.rm = TRUE)) {
-                obj <- filterSpectra(obj, filterRt,
-                            rt = c(min(input[[ns("chr_xlim")]][1],
-                                        na.rm = TRUE),
-                                    max(input[[ns("chr_xlim")]][2],
-                                        na.rm = TRUE)))
+            obj <- .filter_exporting_object(id, input, obj, xrange, "chr_xlim")
 
-            }
-
-            if (input[[ns("chr_ylim")]][1] != min(yrange, na.rm = TRUE) |
-                input[[ns("chr_ylim")]][2] != max(yrange, na.rm = TRUE)*1.05) {
-                obj <- filterSpectra(obj, filterIntensity,
-                            intensity = c(min(input[[ns("chr_ylim")]][1],
-                                            na.rm = TRUE),
-                                        max(input[[ns("chr_ylim")]][2],
-                                            na.rm = TRUE)))
-            }
-
-            #TODO: save with MsExpetimentStash
             filePath <- paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),
                             "../working/chromatogramsvis_outputs",
                             paste0("msexperimentStash_obj_",i()),
                             sep="/")
-            print(paste0("Saving to: ", filePath))
-            message(paste0("Saving to: ", filePath))
 
             saveObject(obj[i()], path = filePath, consolidate = TRUE)
             f <- zip(zipfile = paste0(filePath, ".zip"), files = filePath,
