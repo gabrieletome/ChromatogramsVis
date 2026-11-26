@@ -37,6 +37,9 @@ Suggests:
     MsDataHub,
     testthat,
     shinytest2,
+    alabaster.base,
+    alabaster.se,
+    S4Vectors,
     knitr,
     BiocStyle
 License: Artistic-2.0

@@ -7,6 +7,8 @@
 #'
 #' @importFrom utils unzip
 #'
+#' @importFrom rhandsontable rhandsontable renderRHandsontable hot_col
+#'
 #' @keywords internal
 # nocov start
 base_chromatogramsOverlay <- function(input, output, session, object_reactive,

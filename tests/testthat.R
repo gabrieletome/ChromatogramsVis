@@ -2,6 +2,10 @@ library(testthat)
 library(shinytest2)
 library(MsDataHub)
 library(Chromatograms)
+library(MsExperiment)
+library(MsExperimentStash)
+library(alabaster.base)
+library(S4Vectors)
 library(ChromatogramsVis)
 
 ## A data.frame with chromatogram variables.
@@ -26,9 +30,24 @@ be <- backendInitialize(ChromBackendMemory(),
                         chromData = cdata, peaksData = pdata)
 chr <- Chromatograms(be)
 
-f <- MRM.standmix.5.mzML()
+f <- MsDataHub::MRM.standmix.5.mzML()
 be <- backendInitialize(ChromBackendMzR(), files = f)
 chr_mzr <- Chromatograms(be)
+
+## Generate MsStash
+msStash_dir <- file.path(tempdir(), "msStash_test")
+fls <- unname(c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+                MsDataHub::X20171016_POOL_POS_3_105.134.mzML()))
+
+mse <- MsExperiment()
+df <- data.frame(sample = c("QC1", "QC2"),
+                 time = c(1, 2),
+                 mzML_file = basename(fls))
+sampleData(mse) <- DataFrame(df)
+experimentFiles(mse) <- MsExperimentFiles(mzML_file = fls,
+                                          other_file = "other_file.txt")
+saveObject(mse, msStash_dir)
+
 
 ## To register a new test of the shiny app first install the last version of
 ## package:

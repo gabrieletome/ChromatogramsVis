@@ -121,13 +121,15 @@ get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
 
 #' Filter the Chromatograms/MsExperiment object by Rtime.
 #'
+#' @importFrom MsExperiment filterSpectra
+#'
 #' @noRd
 .filter_exporting_object <- function(id, input, obj, xrange, xgui) {
     ns <- NS(id)
 
     if (input[[ns(xgui)]][1] != min(xrange, na.rm = TRUE) |
         input[[ns(xgui)]][2] != max(xrange, na.rm = TRUE)) {
-        if (inherits(chr, "Chromatograms")) {
+        if (inherits(obj, "Chromatograms")) {
             obj <- filterPeaksData(obj, variables = "rtime",
                             ranges = c(min(input[[ns(xgui)]][1], na.rm = TRUE),
                                        max(input[[ns(xgui)]][2], na.rm = TRUE)))

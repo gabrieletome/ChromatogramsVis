@@ -18,6 +18,7 @@ importFrom(DT,
 )
 importFrom(MsExperiment,
   MsExperiment,
+  filterSpectra,
   spectra
 )
 importFrom(MsStash,
@@ -36,9 +37,11 @@ importFrom(grDevices,
 )
 importFrom(methods,new)
 importFrom(rhandsontable,
+  hot_col,
   hot_to_r,
   rHandsontableOutput,
-  renderRHandsontable
+  renderRHandsontable,
+  rhandsontable
 )
 importFrom(shinybusy,
   remove_modal_spinner,
