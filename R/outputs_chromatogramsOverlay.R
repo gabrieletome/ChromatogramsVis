@@ -96,13 +96,16 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
 
     output[[ns("chrOverlay_color_manual")]] <- renderRHandsontable({
         obj <- object_reactive()
-        obj <- obj[.parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])]
+        sel <- .parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])
+        obj <- obj[sel]
         n <- length(obj)
         mz_name <- mz(obj)
+        id_names <- if (any(!is.na(mz_name)) & all(mz_name != Inf)) mz_name
+                    else sel
+
         df <- data.frame(
-            id = if (any(!is.na(mz_name)) & all(mz_name != Inf)) mz_name
-                 else seq_len(n),
-            color = rep("#00000080", n))
+            id = id_names,
+            color = .refresh_col_tbl(id, input, obj, id_names))
         print(df)
         rhandsontable(df, rowHeaders = NULL, stretchH = "all", height = 300,
             maxRows = nrow(df), fillHandle = list(direction = "vertical",

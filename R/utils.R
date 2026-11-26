@@ -119,6 +119,22 @@ get_df <- function(object, i = NULL, xlim = NULL, ylim = NULL) {
     }, logical(1), USE.NAMES = FALSE)
 }
 
+#' Function to keep the old colors when change subselection of Chromatograms
+#'
+#' @noRd
+.refresh_col_tbl <- function(id, input, object, id_names){
+    ns <- NS(id)
+    n <- length(object)
+    tbl <- hot_to_r(input[[ns("chrOverlay_color_manual")]])
+    cols <- rep("#00000080", n)
+    if (!is.null(tbl)) {
+        cols_tbl <- as.character(tbl[tbl$id %in% id_names, "color"])
+        valid <- .is_valid_color(cols_tbl)
+        cols[valid] <- cols_tbl[valid]
+    }
+    cols
+}
+
 #' Filter the Chromatograms/MsExperiment object by Rtime.
 #'
 #' @importFrom MsExperiment filterSpectra
