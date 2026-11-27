@@ -184,7 +184,7 @@ dblclick_chromatograms <- function(input, output, session, object_reactive,
         if (input[[ns("chr_xlim")]][1] == min(xrange, na.rm = T) &
                 input[[ns("chr_xlim")]][2] == max(xrange, na.rm = T) &
                 input[[ns("chr_ylim")]][1] == min(yrange, na.rm = T) &
-                input[[ns("chr_ylim")]][2] == max(yrange, na.rm = T)) {
+                input[[ns("chr_ylim")]][2] == max(yrange, na.rm = T)*1.05) {
             xadd <- (max(xrange, na.rm = T) - min(xrange, na.rm = T)) / 4
             yadd <- (max(yrange, na.rm = T) - min(yrange, na.rm = T)) / 4
 
@@ -204,7 +204,7 @@ dblclick_chromatograms <- function(input, output, session, object_reactive,
                                   max(xrange, na.rm = T)))
             updateSliderInput(session, ns("chr_ylim"),
                         value = c(min(yrange, na.rm = T),
-                                  max(yrange, na.rm = T)))
+                                  max(yrange, na.rm = T)*1.05))
 
         }
     })

@@ -18,6 +18,7 @@ importFrom(DT,
 )
 importFrom(MsExperiment,
   MsExperiment,
+  filterSpectra,
   spectra
 )
 importFrom(MsStash,
@@ -30,10 +31,28 @@ importFrom(Spectra,
 )
 importFrom(colourpicker,colourInput)
 importFrom(ggplot2,ggsave)
+importFrom(grDevices,
+  colors,
+  rgb
+)
 importFrom(methods,new)
+importFrom(rhandsontable,
+  hot_col,
+  hot_to_r,
+  rHandsontableOutput,
+  renderRHandsontable,
+  rhandsontable
+)
 importFrom(shinybusy,
   remove_modal_spinner,
   show_modal_spinner
 )
-importFrom(stats,na.omit)
-importFrom(utils,packageVersion)
+importFrom(stats,
+  na.omit,
+  runif
+)
+importFrom(utils,
+  packageVersion,
+  unzip,
+  zip
+)

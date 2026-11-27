@@ -27,8 +27,10 @@ chrGui <- function (id, object){
                     min = min(xrange, na.rm = T), max = max(xrange, na.rm = T),
                     dragRange = TRUE),
             sliderInput(ns("chr_ylim"), "Resize Y axes:",
-                    value = c(min(yrange, na.rm = T), max(yrange, na.rm = T)),
-                    min = min(yrange, na.rm = T), max = max(yrange, na.rm = T),
+                    value = c(min(yrange, na.rm = T),
+                              max(yrange, na.rm = T)*1.05),
+                    min = min(yrange, na.rm = T),
+                    max = max(yrange, na.rm = T)*1.05,
                     dragRange = TRUE),
             colourInput(ns("chr_color"), "Select color: ", value = "#00000080",
                         allowTransparent = TRUE),
@@ -84,8 +86,12 @@ chrGui <- function (id, object){
                 ),
                 column(
                     width = 6,
-                    downloadButton(ns("downloadChromatograms_RDS"),
-                            "Download filtered object")
+                    if(galaxy_instance())
+                        actionButton(ns("exportGalaxyChromatograms_zip"),
+                                    "Export to Galaxy")
+                    else
+                        downloadButton(ns("downloadChromatograms_RDS"),
+                                    "Download filtered object")
                 )
             ),
             hr(),

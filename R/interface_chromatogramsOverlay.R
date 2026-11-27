@@ -22,16 +22,18 @@ chrOverlayGui <- function (id, object){
     tagList(
         column(
             width = 2,
+            textInput(ns("chrOverlay_idx"), "Chromatograms to visualize: ",
+                      value = paste0("1-", length(object)), updateOn = "blur"),
             sliderInput(ns("chrOverlay_xlim"), "Resize X axes:",
                     value = c(min(xrange, na.rm = T), max(xrange, na.rm = T)),
                     min = min(xrange, na.rm = T), max = max(xrange, na.rm = T),
                     dragRange = TRUE),
             sliderInput(ns("chrOverlay_ylim"), "Resize Y axes:",
-                    value = c(min(yrange, na.rm = T), max(yrange, na.rm = T)),
-                    min = min(yrange, na.rm = T), max = max(yrange, na.rm = T),
+                    value = c(min(yrange, na.rm = T),
+                              max(yrange, na.rm = T)*1.05),
+                    min = min(yrange, na.rm = T),
+                    max = max(yrange, na.rm = T)*1.05,
                     dragRange = TRUE),
-            colourInput(ns("chrOverlay_color"), "Select color: ",
-                        value = "#00000080", allowTransparent = TRUE),
             numericInput(ns("chrOverlay_bs"), "Font size: ",
                          value = 16, min = 1),
             numericInput(ns("chrOverlay_pch"), "Plotting symbol: ", value = 20,
@@ -42,7 +44,24 @@ chrOverlayGui <- function (id, object){
                          min = 0.1, step = 0.1),
             checkboxInput(ns("chrOverlay_showAxes"), "Show axes", value = TRUE),
             checkboxInput(ns("chrOverlay_showBox"), "Show frame box",
-                            value = TRUE)
+                            value = TRUE),
+            selectInput(ns("chrOverlay_col_method"),
+                        "Select coloring method:",
+                        choices = c("Single color", "Auto multiple colors",
+                                    "Manual colors"),
+                        selected = "Single color"),
+            conditionalPanel(
+                "input.chrOverlay_col_method == 'Single color'",
+                colourInput(ns("chrOverlay_color"), "Select color: ",
+                        value = "#00000080", allowTransparent = TRUE),
+                ns = NS(id)),
+            conditionalPanel(
+                "input.chrOverlay_col_method == 'Auto multiple colors'",
+                ns = NS(id)),
+            conditionalPanel(
+                "input.chrOverlay_col_method == 'Manual colors'",
+                rHandsontableOutput(ns("chrOverlay_color_manual")),
+                ns = NS(id))
         ),
         column(
             width = 6,
@@ -69,8 +88,13 @@ chrOverlayGui <- function (id, object){
                 ),
                 column(
                     width = 6,
-                    downloadButton(ns("downloadChromatograms_overlay_RDS"),
-                            "Download filtered object")
+                    if(galaxy_instance())
+                        actionButton(
+                                    ns("exportGalaxyChromatograms_overlay_zip"),
+                                    "Export to Galaxy")
+                    else
+                        downloadButton(ns("downloadChromatograms_overlay_RDS"),
+                                    "Download filtered object")
                 )
             ),
             hr(),

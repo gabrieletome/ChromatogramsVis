@@ -1,6 +1,6 @@
 Package: ChromatogramsVis
 Title: Visualising and Exploring Chromatograms Data
-Version: 0.1.9
+Version: 0.2.0
 Description: This package defines a Shiny app to visualise and explore mass
     spectrometry data stored as Chromatograms objects.
 Authors@R:
@@ -25,6 +25,7 @@ Imports:
     DT,
     ggplot2,
     htmltools,
+    rhandsontable,
     Spectra,
     MsExperiment,
     MsStash,
@@ -36,6 +37,9 @@ Suggests:
     MsDataHub,
     testthat,
     shinytest2,
+    alabaster.base,
+    alabaster.se,
+    S4Vectors,
     knitr,
     BiocStyle
 License: Artistic-2.0
@@ -45,4 +49,4 @@ Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/RforMassSpectrometry/ChromatogramsVis/issues
 URL: https://rformassspectrometry.github.io/ChromatogramsVis
 biocViews: Proteomics, MassSpectrometry, Metabolomics, Visualization
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

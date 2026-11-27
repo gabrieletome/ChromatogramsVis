@@ -246,6 +246,8 @@ load_rds_file <- function(input, output, session,
 #' on the summarized method selected. If `"In memory"` option is selected it
 #' change the backend to `ChromBackendMemory`. Activate the GUIs.
 #'
+#' @importFrom utils unzip
+#'
 #' @keywords internal
 # nocov start
 load_msstash_file <- function(input, output, session,
@@ -268,12 +270,13 @@ load_msstash_file <- function(input, output, session,
             cat(dir)
             ap <- AlabasterParam(dir)
             print(ap)
-            object <- readMsObject(MsExperiment(), ap)
+            obj <- readMsObject(MsExperiment(), ap)
+            object_reactive_msexp(obj)
             # object <- spectra(object)
             # object <- backendInitialize(new("ChromBackendSpectra"), object,
             #                 summarize.method = input$summarize_method_stash)
             # object <- Chromatograms(object)
-            object <- Chromatograms(spectra(object),
+            object <- Chromatograms(spectra(obj),
                             summarize.method = input$summarize_method_stash)
 
             if (!length(object))
@@ -313,6 +316,8 @@ load_msstash_file <- function(input, output, session,
 #' convert to `Chromatograms` based on the summarized method selected. If
 #' `"In memory"` option is selected it change the backend to
 #' `ChromBackendMemory`. Activate the GUIs.
+#'
+#' @importFrom utils unzip
 #'
 #' @keywords internal
 # nocov start

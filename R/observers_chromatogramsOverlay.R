@@ -73,9 +73,9 @@ dblclick_chromatogramsOverlay <- function(input, output, session,
         yrange <- round(unlist(intensity(object_reactive())), 2)
 
         if (input[[ns("chrOverlay_xlim")]][1] == min(xrange, na.rm = T) &
-                input[[ns("chrOverlay_xlim")]][2] == max(xrange, na.rm = T) &
-                input[[ns("chrOverlay_ylim")]][1] == min(yrange, na.rm = T) &
-                input[[ns("chrOverlay_ylim")]][2] == max(yrange, na.rm = T)) {
+             input[[ns("chrOverlay_xlim")]][2] == max(xrange, na.rm = T) &
+             input[[ns("chrOverlay_ylim")]][1] == min(yrange, na.rm = T) &
+             input[[ns("chrOverlay_ylim")]][2] == max(yrange, na.rm = T)*1.05) {
             xadd <- (max(xrange, na.rm = T) - min(xrange, na.rm = T)) / 4
             yadd <- (max(yrange, na.rm = T) - min(yrange, na.rm = T)) / 4
 
@@ -95,7 +95,7 @@ dblclick_chromatogramsOverlay <- function(input, output, session,
                                   max(xrange, na.rm = T)))
             updateSliderInput(session, ns("chrOverlay_ylim"),
                         value = c(min(yrange, na.rm = T),
-                                  max(yrange, na.rm = T)))
+                                  max(yrange, na.rm = T)*1.05))
 
         }
     })

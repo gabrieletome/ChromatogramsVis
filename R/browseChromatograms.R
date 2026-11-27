@@ -20,6 +20,10 @@
 #'
 #' @importFrom colourpicker colourInput
 #'
+#' @importFrom rhandsontable rHandsontableOutput renderRHandsontable hot_to_r
+#'
+#' @importFrom grDevices rgb colors
+#'
 #' @importFrom DT renderDT DTOutput
 #'
 #' @importFrom ggplot2 ggsave

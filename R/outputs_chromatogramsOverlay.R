@@ -5,6 +5,10 @@
 #' variable of the Chromatograms Overlay plot. It is included alse the function
 #' to download the plot and the filtered object.
 #'
+#' @importFrom utils unzip
+#'
+#' @importFrom rhandsontable rhandsontable renderRHandsontable hot_col
+#'
 #' @keywords internal
 # nocov start
 base_chromatogramsOverlay <- function(input, output, session, object_reactive,
@@ -17,10 +21,12 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                         text = "Loading...")
         req(object_reactive())
 
-        gg <- ggplotChromatogramsOverlay(object_reactive(),
+        obj <- object_reactive()
+        obj <- obj[.parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])]
+        gg <- ggplotChromatogramsOverlay(obj,
                             xlim = input[[ns("chrOverlay_xlim")]],
                             ylim = input[[ns("chrOverlay_ylim")]],
-                            col = input[[ns("chrOverlay_color")]],
+                            col = .get_colors(id, input, obj),
                             pch = input[[ns("chrOverlay_pch")]],
                             cex = input[[ns("chrOverlay_cex")]],
                             lwd = input[[ns("chrOverlay_lwd")]],
@@ -34,7 +40,9 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
     output[[ns("dfChromatograms_overlay")]] <- renderDT({
         req(object_reactive())
 
-        get_df(object_reactive(),
+        obj <- object_reactive()
+        get_df(obj[.parse_chrOverlay_idx(obj,
+                                        input[[ns("chrOverlay_idx")]])],
                 xlim = input[[ns("chrOverlay_xlim")]],
                 ylim = input[[ns("chrOverlay_ylim")]])
     })
@@ -46,8 +54,11 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
             return(NULL)
         }
         ## Select the point closest to the mouse
-        v_l <- peaksData(object_reactive())
-        mz_name <- mz(object_reactive())
+        obj <- object_reactive()
+        obj <- obj[.parse_chrOverlay_idx(obj,
+                                        input[[ns("chrOverlay_idx")]])]
+        v_l <- peaksData(obj)
+        mz_name <- mz(obj)
         if(any(!is.na(mz_name)))
             names(v_l) <- mz_name
         v <- rbindlistWithRownames(v_l, idcol = "mz")
@@ -83,13 +94,36 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
         )
     })
 
+    output[[ns("chrOverlay_color_manual")]] <- renderRHandsontable({
+        obj <- object_reactive()
+        sel <- .parse_chrOverlay_idx(obj, input[[ns("chrOverlay_idx")]])
+        obj <- obj[sel]
+        n <- length(obj)
+        mz_name <- mz(obj)
+        id_names <- if (any(!is.na(mz_name)) & all(mz_name != Inf)) mz_name
+                    else sel
+
+        df <- data.frame(
+            id = id_names,
+            color = .refresh_col_tbl(id, input, obj, id_names))
+        print(df)
+        rhandsontable(df, rowHeaders = NULL, stretchH = "all", height = 300,
+            maxRows = nrow(df), fillHandle = list(direction = "vertical",
+                                                autoInsertRow = FALSE)) |>
+            hot_col("id", readOnly = TRUE) |>
+            hot_col("color", type = "text")
+    })
+
     output[[ns("downloadChromatograms_overlay")]] <- downloadHandler(
         filename = "chromatogramsOverlay.png",
         content = function(file) {
-            ggsave(ggplotChromatogramsOverlay(object_reactive(),
+            obj <- object_reactive()
+            obj <- obj[.parse_chrOverlay_idx(obj,
+                                            input[[ns("chrOverlay_idx")]])]
+            ggsave(ggplotChromatogramsOverlay(obj,
                             xlim = input[[ns("chrOverlay_xlim")]],
                             ylim = input[[ns("chrOverlay_ylim")]],
-                            col = input[[ns("chrOverlay_color")]],
+                            col = .get_colors(id, input, obj),
                             pch = input[[ns("chrOverlay_pch")]],
                             cex = input[[ns("chrOverlay_cex")]],
                             lwd = input[[ns("chrOverlay_lwd")]],
@@ -108,32 +142,14 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
             show_modal_spinner(spin = "half-circle",
                             text = "Loading...")
             obj <- object_reactive()
+            obj <- obj[.parse_chrOverlay_idx(obj,
+                                            input[[ns("chrOverlay_idx")]])]
             xrange <- round(unlist(rtime(obj)), 2)
-            yrange <- round(unlist(intensity(obj)), 2)
             if(is.null(object_reactive_msexp())){
                 message("Saving Chromatograms object")
                 ## Filter and save chromatograms object
-                if (input[[ns("chrOverlay_xlim")]][1] !=
-                        min(xrange, na.rm = TRUE) |
-                    input[[ns("chrOverlay_xlim")]][2] !=
-                        max(xrange, na.rm = TRUE)) {
-                    obj <- filterPeaksData(obj, variables = "rtime",
-                        ranges = c(min(input[[ns("chrOverlay_xlim")]][1],
-                                        na.rm = TRUE),
-                                    max(input[[ns("chrOverlay_xlim")]][2],
-                                        na.rm = TRUE)))
-                }
-
-                if (input[[ns("chrOverlay_ylim")]][1] !=
-                        min(yrange, na.rm = TRUE) |
-                    input[[ns("chrOverlay_ylim")]][2] !=
-                        max(yrange, na.rm = TRUE)) {
-                    obj <- filterPeaksData(obj, variables = "intensity",
-                            ranges = c(min(input[[ns("chrOverlay_ylim")]][1],
-                                            na.rm = TRUE),
-                                        max(input[[ns("chrOverlay_ylim")]][2],
-                                            na.rm = TRUE)))
-                }
+                obj <- .filter_exporting_object(id, input, obj, xrange,
+                                                "chrOverlay_xlim")
 
                 obj <- setBackend(obj, ChromBackendMemory())
                 obj <- filterEmptyChromatograms(obj)
@@ -142,28 +158,10 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
                 message("Saving MsExperiment object")
                 ## Filter and save MsExperiment object
                 obj <- object_reactive_msexp()
-                if (input[[ns("chrOverlay_xlim")]][1] !=
-                        min(xrange, na.rm = TRUE) |
-                    input[[ns("chrOverlay_xlim")]][2] !=
-                        max(xrange, na.rm = TRUE)) {
-                    obj <- filterSpectra(obj, filterRt,
-                                rt = c(min(input[[ns("chrOverlay_xlim")]][1],
-                                            na.rm = TRUE),
-                                        max(input[[ns("chrOverlay_xlim")]][2],
-                                            na.rm = TRUE)))
-
-                }
-
-                if (input[[ns("chrOverlay_ylim")]][1] !=
-                        min(yrange, na.rm = TRUE) |
-                    input[[ns("chrOverlay_ylim")]][2] !=
-                        max(yrange, na.rm = TRUE)) {
-                    obj <- filterSpectra(obj, filterIntensity,
-                            intensity = c(min(input[[ns("chrOverlay_ylim")]][1],
-                                            na.rm = TRUE),
-                                        max(input[[ns("chrOverlay_ylim")]][2],
-                                            na.rm = TRUE)))
-                }
+                obj <- obj[.parse_chrOverlay_idx(obj,
+                                                input[[ns("chrOverlay_idx")]])]
+                obj <- .filter_exporting_object(id, input, obj, xrange,
+                                                "chrOverlay_xlim")
 
                 ## Save with MsExperimentStash
                 saveObject(obj, path = gsub(".zip", "", file),
@@ -175,5 +173,44 @@ base_chromatogramsOverlay <- function(input, output, session, object_reactive,
             f
         }
     )
+
+    observeEvent(input[[ns("exportGalaxyChromatograms_overlay_zip")]], {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Exporting...")
+        obj <- object_reactive()
+        xrange <- round(unlist(rtime(obj)), 2)
+
+        if(!is.null(object_reactive_msexp())){
+            obj <- object_reactive_msexp()
+            obj <- obj[.parse_chrOverlay_idx(obj,
+                                            input[[ns("chrOverlay_idx")]])]
+            obj <- .filter_exporting_object(id, input, obj, xrange,
+                                            "chrOverlay_xlim")
+
+            filePath <- paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),
+                            "../working/chromatogramsvis_outputs",
+                            "msexperimentStash_obj",
+                            sep="/")
+
+            saveObject(obj, path = filePath, consolidate = TRUE)
+            f <- zip(zipfile = paste0(filePath, ".zip"), files = filePath,
+                flags = "-r")
+            remove_modal_spinner()
+            showModal(modalDialog(
+                title = "Data available in Galaxy",
+                paste0("The data are now available in Galaxy. Now you can ",
+                        "close the app and stop the app to get the data in ",
+                        "your history.")
+            ))
+            f
+        } else {
+            showModal(modalDialog(
+                title = "Error in exporting",
+                paste0("The export to Galaxy is currently available only for ",
+                        "MsExperimentStash input. We are working on exporting ",
+                        "the other file format.")
+            ))
+        }
+    })
 }
 # nocov end

@@ -5,6 +5,8 @@
 #' variable of the Chromatograms plot. It is included alse the function to
 #' download the plot and the filtered object.
 #'
+#' @importFrom utils zip
+#'
 #' @keywords internal
 # nocov start
 base_chromatograms <- function(input, output, session, object_reactive,
@@ -108,27 +110,10 @@ base_chromatograms <- function(input, output, session, object_reactive,
                             text = "Loading...")
             obj <- object_reactive()
             xrange <- round(unlist(rtime(obj)), 2)
-            yrange <- round(unlist(intensity(obj)), 2)
             if(is.null(object_reactive_msexp())){
                 ## Filter and save chromatograms object
-                if (input[[ns("chr_xlim")]][1] != min(xrange, na.rm = TRUE) |
-                    input[[ns("chr_xlim")]][2] != max(xrange, na.rm = TRUE)) {
-                    obj <- filterPeaksData(obj, variables = "rtime",
-                                ranges = c(min(input[[ns("chr_xlim")]][1],
-                                                na.rm = TRUE),
-                                            max(input[[ns("chr_xlim")]][2],
-                                                na.rm = TRUE)))
-
-                }
-
-                if (input[[ns("chr_ylim")]][1] != min(yrange, na.rm = TRUE) |
-                    input[[ns("chr_ylim")]][2] != max(yrange, na.rm = TRUE)) {
-                    obj <- filterPeaksData(obj, variables = "intensity",
-                                    ranges = c(min(input[[ns("chr_ylim")]][1],
-                                                    na.rm = TRUE),
-                                                max(input[[ns("chr_ylim")]][2],
-                                                    na.rm = TRUE)))
-                }
+                obj <- .filter_exporting_object(id, input, obj, xrange,
+                                                "chr_xlim")
 
                 obj <- setBackend(obj[i()], ChromBackendMemory())
                 obj <- filterEmptyChromatograms(obj)
@@ -136,26 +121,9 @@ base_chromatograms <- function(input, output, session, object_reactive,
             } else {
                 ## Filter and save MsExperiment object
                 obj <- object_reactive_msexp()
-                if (input[[ns("chr_xlim")]][1] != min(xrange, na.rm = TRUE) |
-                    input[[ns("chr_xlim")]][2] != max(xrange, na.rm = TRUE)) {
-                    obj <- filterSpectra(obj, filterRt,
-                                rt = c(min(input[[ns("chr_xlim")]][1],
-                                            na.rm = TRUE),
-                                        max(input[[ns("chr_xlim")]][2],
-                                            na.rm = TRUE)))
+                obj <- .filter_exporting_object(id, input, obj, xrange,
+                                                "chr_xlim")
 
-                }
-
-                if (input[[ns("chr_ylim")]][1] != min(yrange, na.rm = TRUE) |
-                    input[[ns("chr_ylim")]][2] != max(yrange, na.rm = TRUE)) {
-                    obj <- filterSpectra(obj, filterIntensity,
-                                intensity = c(min(input[[ns("chr_ylim")]][1],
-                                                na.rm = TRUE),
-                                            max(input[[ns("chr_ylim")]][2],
-                                                na.rm = TRUE)))
-                }
-
-                #TODO: save with MsExpetimentStash
                 saveObject(obj[i()], path = gsub(".zip", "", file),
                             consolidate = TRUE)
                 f <- zip(zipfile = file, files = gsub(".zip", "", file),
@@ -165,5 +133,41 @@ base_chromatograms <- function(input, output, session, object_reactive,
             f
         }
     )
+
+    observeEvent(input[[ns("exportGalaxyChromatograms_zip")]], {
+        show_modal_spinner(spin = "half-circle",
+                        text = "Exporting...")
+        obj <- object_reactive()
+        xrange <- round(unlist(rtime(obj)), 2)
+
+        if(!is.null(object_reactive_msexp())){
+            obj <- object_reactive_msexp()
+            obj <- .filter_exporting_object(id, input, obj, xrange, "chr_xlim")
+
+            filePath <- paste(Sys.getenv("_GALAXY_JOB_HOME_DIR"),
+                            "../working/chromatogramsvis_outputs",
+                            paste0("msexperimentStash_obj_",i()),
+                            sep="/")
+
+            saveObject(obj[i()], path = filePath, consolidate = TRUE)
+            f <- zip(zipfile = paste0(filePath, ".zip"), files = filePath,
+                flags = "-r")
+            remove_modal_spinner()
+            showModal(modalDialog(
+                title = "Data available in Galaxy",
+                paste0("The data are now available in Galaxy. Now you can ",
+                        "close the app and stop the app to get the data in ",
+                        "your history.")
+            ))
+            f
+        } else {
+            showModal(modalDialog(
+                title = "Error in exporting",
+                paste0("The export to Galaxy is currently available only for ",
+                        "MsExperimentStash input. We are working on exporting ",
+                        "the other file format.")
+            ))
+        }
+    })
 }
 # nocov end
